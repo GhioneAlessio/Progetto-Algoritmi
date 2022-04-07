@@ -3,17 +3,16 @@
 #include "quicksort.h"
 
 #define INITIAL_CAPACITY_QS	2
+	
+static unsigned long get_index_to_insert_qs(QuickSort *quick_sort, void* element);
+static void insert_element_qs(QuickSort *quick_sort, void* element, unsigned long index);
 
-static unsigned long get_index_to_insert_qs (QuickSort * quick_sort, void* element);
-static void insert_element_qs (QuickSort * quick_sort, void* element, unsigned long index);
-
-
-QuickSort *quick_sort_create (int (*qs_precedes)(void*, void*)){
-	if (precedes == NULL){
+QuickSort *quick_sort_create(int (*qs_precedes)(void*, void*)){
+	if (qs_precedes == NULL){
 		fprintf(stderr, "quick_sort_create: precedes parameter cannot be NULL");
 		exit(EXIT_FAILURE);
 	}
-	QuickSort * quick_sort = *quick_sort = (QuickSort*) malloc (sizeof(QuickSort));
+	QuickSort *quick_sort = (QuickSort *)malloc (sizeof(QuickSort));
 	if (quick_sort == NULL){
 		fprintf(stderr, "quick_sort_create: unable to allocate the memory");
 		exit(EXIT_FAILURE);
@@ -25,7 +24,7 @@ QuickSort *quick_sort_create (int (*qs_precedes)(void*, void*)){
 	}
 	quick_sort->size = 0;
 	quick_sort->array_capacity = INITIAL_CAPACITY_QS;
-	quick_sort->precedes = precedes;
+	quick_sort->precedes = qs_precedes;
 	return quick_sort;
 }
 
@@ -99,7 +98,7 @@ static unsigned long get_index_to_insert_qs (QuickSort * quick_sort, void* eleme
 		} else
 			i++;
 	}
-	return i;
+	return(i);
 }
 
 static void insert_element_qs (QuickSort * quick_sort, void* element, unsigned long index){
@@ -108,4 +107,41 @@ static void insert_element_qs (QuickSort * quick_sort, void* element, unsigned l
 		(quick_sort->array)[i] = (quick_sort->array)[i - 1];
 	}
 	(quick_sort->array)[index] = element; 
+}
+
+void swap(QuickSort *quick_sort, int p, int j) {
+  void** tmp;
+  tmp = quick_sort->array[p];
+  quick_sort->array[p] = quick_sort->array[j];
+  quick_sort->array[j] = tmp;
+}
+
+void quickSort(QuickSort *quick_sort, int array_start, int array_end) {
+  int pivot = 0;
+  if (array_start < array_end) { 
+    pivot = Partition(quick_sort, array_start, array_end);      
+    if (pivot > 1)
+      quickSort(quick_sort, array_start, pivot - 1);
+    if (pivot < array_end - 1)
+    quickSort(quick_sort, pivot + 1, array_end);
+  }
+}
+  
+int Partition(QuickSort *quick_sort, int array_start, int array_end) {
+  int i = array_start+1, j = array_end;
+  while (i <= j) {  
+    if (quick_sort->array[i] <= quick_sort->array[array_start]) {
+      i = i + 1;
+    } else {
+      if (quick_sort->array[j] > quick_sort->array[array_start]) {
+        j = j - 1;
+      } else {
+        swap(quick_sort, i, j);
+        i = i + 1;
+        j = j - 1;
+      }
+    }
+  }
+  swap(quick_sort, array_start, j);
+  return j;
 }
