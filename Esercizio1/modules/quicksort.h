@@ -18,8 +18,8 @@ void* quick_sort_get(QuickSort *, unsigned long);
 void* quick_sort_free_memory(QuickSort *);
 
 int qs_precedes(int *a, int *b);
-int Partition(QuickSort *quick_sort, int array_start, int array_end);
-void quickSort(QuickSort *quick_sort, int array_start, int array_end);
+int Partition(QuickSort *quick_sort, int array_start, int array_end, void (*print)(void *));
+void quickSort(QuickSort *quick_sort, int array_start, int array_end, void (*print)(void *));
 void swap(QuickSort *quick_sort, int p, int j);
 
 #endif

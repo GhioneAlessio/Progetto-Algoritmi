@@ -5,8 +5,10 @@
 #include "quicksort.h"
 
 struct record{
-  char* string_field;
-  int integer_field;
+  int id;
+  char *field1;
+  int field2;
+  double field3;
 };
 
 //It takes as input two pointers to struct record.
@@ -23,7 +25,7 @@ static int precedes_record_int_field(void* r1_p,void* r2_p){
   }
   struct record *rec1_p = (struct record*)r1_p;
   struct record *rec2_p = (struct record*)r2_p;
-  if(rec1_p->integer_field < rec2_p->integer_field){
+  if(rec1_p->id < rec2_p->id){
     return(1);
   }
   return(0);
@@ -33,6 +35,7 @@ static int precedes_record_int_field(void* r1_p,void* r2_p){
 ///It takes as input two pointers to struct record.
 //It returns 1 iff the string field of the first record is less than 
 //the string field of the second one (0 otherwise)
+/*
 static int precedes_record_string_field(void* r1_p,void* r2_p){
   if(r1_p == NULL){
     fprintf(stderr,"precedes_string: the first parameter is a null pointer");
@@ -49,32 +52,31 @@ static int precedes_record_string_field(void* r1_p,void* r2_p){
   }
   return(0);
 }
+*/
 
-
-static  void free_array(OrderedArray* array) {
-  unsigned long  el_num =  ordered_array_size(array);
+static  void free_array(QuickSort* array) {
+  unsigned long  el_num =  quick_sort_size(array);
   for(unsigned long i=0;i<el_num;i++){
-    struct record *array_element = (struct record *)ordered_array_get(array, i);
-    free(array_element->string_field);
+    struct record *array_element = (struct record *)quick_sort_get(array, i);
+    free(array_element->field1);
     free(array_element);
   }
-  ordered_array_free_memory(array);
+  quick_sort_free_memory(array);
 }
 
-static  void print_array(OrderedArray* array){
-  unsigned long el_num =  ordered_array_size(array);
-  
+static  void print_array(QuickSort* array){
+  unsigned long el_num =  quick_sort_size(array);
   struct record *array_element;
   
-  printf("\nORDERED ARRAY OF RECORDS\n");
+  printf("\nQUICKSORT ARRAY OF RECORDS\n");
   
   for(unsigned long i=0;i<el_num;i++){
-    array_element = (struct record *)ordered_array_get(array, i);
-    printf("<%s,%d>\n",array_element->string_field,array_element->integer_field); 
+    array_element = (struct record *)quick_sort_get(array, i);
+    printf("<%d,%s, %d, %f>\n",array_element->id, array_element->field1, array_element->field2, array_element->field3); 
   }
 }
 
-static void load_array(const char* file_name, OrderedArray* array){
+static void load_array(const char* file_name, QuickSort* array){
   char *read_line_p;
   char buffer[1024];
   int buf_size = 1024;
@@ -92,23 +94,32 @@ static void load_array(const char* file_name, OrderedArray* array){
       exit(EXIT_FAILURE);
     }   
     strcpy(read_line_p,buffer);   
-    char *string_field_in_read_line_p = strtok(read_line_p,",");
-    char *integer_field_in_read_line_p = strtok(NULL,",");  
-    char *string_field = malloc((strlen(string_field_in_read_line_p)+1)*sizeof(char));
-    if(string_field == NULL){
-      fprintf(stderr,"main: unable to allocate memory for the string field of the read record");
+    char *id_in_read_line_p = strtok(read_line_p,",");
+    char *field1_in_read_line_p = strtok(NULL,",");
+    char *field2_in_read_line_p = strtok(NULL,",");  
+    char *field3_in_read_line_p = strtok(NULL,",");  
+
+    int id = atoi(id_in_read_line_p);
+
+    char *field1 = malloc((strlen(field1_in_read_line_p)+1)*sizeof(char));
+    if(field1 == NULL){
+      fprintf(stderr,"main: unable to allocate memory for the field1 of the read record");
       exit(EXIT_FAILURE);
     }  
-    strcpy(string_field,string_field_in_read_line_p);
-    int integer_field = atoi(integer_field_in_read_line_p);  
+    strcpy(field1,field1_in_read_line_p);
+    
+    int field2 = atoi(field2_in_read_line_p);
+    double field3 = atof(field3_in_read_line_p); 
     struct record *record_p = malloc(sizeof(struct record));
     if(record_p == NULL){
       fprintf(stderr,"main: unable to allocate memory for the read record");
       exit(EXIT_FAILURE);
     }   
-    record_p->string_field = string_field;
-    record_p->integer_field = integer_field;
-    ordered_array_add(array, (void*)record_p);
+    record_p->id = id;
+    record_p->field1 = field1;
+    record_p->field2 = field2;
+    record_p->field3 = field3;
+    quick_sort_add(array, (void*)record_p);
     free(read_line_p);
   }
   fclose(fp);
@@ -116,8 +127,9 @@ static void load_array(const char* file_name, OrderedArray* array){
 }
 
 static  void test_with_comparison_function(const char* file_name, int (*compare)(void*, void*)) {
-  OrderedArray* array = ordered_array_create(compare);
+  QuickSort* array = quick_sort_create(compare);
   load_array(file_name, array);
+  quickSort(array, 0, quick_sort_size(array));
   print_array(array);
   free_array(array);
 }
@@ -125,12 +137,18 @@ static  void test_with_comparison_function(const char* file_name, int (*compare)
 //It should be invoked with one parameter specifying the filepath of the data file
 int main(int argc, char const *argv[]) {
   if(argc < 2) {
-    printf("Usage: ordered_array_main <file_name>\n");
+    printf("Usage: quick_sort_main <file_name>\n");
     exit(EXIT_FAILURE);
   }
-  test_with_comparison_function(argv[1], precedes_record_int_field);
-  test_with_comparison_function(argv[1], precedes_record_string_field);   
+ // test_with_comparison_function(argv[1], precedes_record_int_field);
+ // test_with_comparison_function(argv[1], precedes_record_string_field);   
   
+ QuickSort* array = quick_sort_create(precedes_record_int_field);
+  load_array(argv[1], array);
+//  quickSort(array, 0, quick_sort_size(array));
+  print_array(array);
+  free_array(array);
+
   return (EXIT_SUCCESS);
 }
 
