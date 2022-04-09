@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "quicksort.h"
+#include "../modules/quicksort.h"
 
 struct record{
   char* string_field;

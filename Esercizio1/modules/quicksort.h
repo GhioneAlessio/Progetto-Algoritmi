@@ -5,7 +5,7 @@ typedef struct _QuickSort QuickSort;
 
 struct _QuickSort{
 	void** array; 
-  unsigned long array_capacity; 
+  unsigned long array_capacity;
 	unsigned long size;
 	int (*precedes)(void*, void*);
 };
@@ -18,8 +18,8 @@ void* quick_sort_get(QuickSort *, unsigned long);
 void* quick_sort_free_memory(QuickSort *);
 
 int qs_precedes(int *a, int *b);
-int Partition(QuickSort *quick_sort, int array_start, int array_end, void (*print)(void *));
-void quickSort(QuickSort *quick_sort, int array_start, int array_end, void (*print)(void *));
+int Partition(QuickSort *quick_sort, int array_start, int array_end);
+void quickSort(QuickSort *quick_sort, int array_start, int array_end);
 void swap(QuickSort *quick_sort, int p, int j);
 
 #endif

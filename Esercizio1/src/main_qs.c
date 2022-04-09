@@ -165,7 +165,7 @@ static  void test_with_comparison_function(const char* file_name, int (*compare)
   QuickSort* array = quick_sort_create(compare);
   load_array(file_name, array);
   print_array(array);
-  quickSort(array, 0, quick_sort_size(array), print_array);
+  quickSort(array, 0, quick_sort_size(array)-1);
   print_array(array);
   free_array(array);
 }

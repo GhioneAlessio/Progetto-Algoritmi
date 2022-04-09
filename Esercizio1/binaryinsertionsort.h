@@ -10,12 +10,6 @@ void swap (int array[], int p, int j);
 
 typedef struct _BinaryInsertionSort BinaryInsertionSort;
 
-struct _QuickSort{
-	void **array; 
-  	unsigned long array_capacity; 
-	unsigned long size;
-	int (*precedes)(void*, void*);
-}
 
 BinaryInsertionSort * binary_insertion_sort_create (int (*bis_precedes)(void*, void*));
 int binary_insertion_sort_is_empty(BinaryInsertionSort *);

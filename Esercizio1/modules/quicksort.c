@@ -114,34 +114,33 @@ void swap(QuickSort *quick_sort, int p, int j)
 	quick_sort->array[j] = tmp;
 }
 
-void quickSort(QuickSort *quick_sort, int array_start, int array_end, void (*print)(void *))
+void quickSort(QuickSort *quick_sort, int array_start, int array_end)
 {
-	printf("quicksort\n");
 	int pivot = 0;
 	if (array_start < array_end)
 	{
-		pivot = Partition(quick_sort, array_start, array_end, print);
+		pivot = Partition(quick_sort, array_start, array_end);
 		if (pivot > 1)
-			quickSort(quick_sort, array_start, pivot - 1, print);
+			quickSort(quick_sort, array_start, pivot - 1);
 		if (pivot < array_end - 1)
-			quickSort(quick_sort, pivot + 1, array_end,print);
+			quickSort(quick_sort, pivot + 1, array_end);
 	}
 }
 
-int Partition(QuickSort *quick_sort, int array_start, int array_end, void (*print)(void *))
+int Partition(QuickSort *quick_sort, int array_start, int array_end)
 {
-	int tmp;
-	int i = array_start + 1, j = array_end - 1;
+	int i = array_start + 1, j = array_end, tmp;
 	while (i <= j)
 	{// array[i] <= array[array_start]
-		if ((quick_sort->precedes(quick_sort->array[i], quick_sort->array[array_start]) ||
-				 (!(quick_sort->precedes(quick_sort->array[i], quick_sort->array[array_start])) && !(quick_sort->precedes(quick_sort->array[array_start], quick_sort->array[i])))) != 0)
+		tmp = (quick_sort->precedes(quick_sort->array[i], quick_sort->array[array_start]));
+		if ( tmp ||
+				 (!(tmp) && !(quick_sort->precedes(quick_sort->array[array_start], quick_sort->array[i]) == 1)))
 		{
 			i = i + 1;
 		}
 		else
 		{//array[j] > array[array_start]
-			if (quick_sort->precedes(quick_sort->array[array_start], quick_sort->array[j]))
+			if (quick_sort->precedes(quick_sort->array[array_start], quick_sort->array[j]) == 1)
 			{
 				j = j - 1;
 			}
@@ -154,9 +153,5 @@ int Partition(QuickSort *quick_sort, int array_start, int array_end, void (*prin
 		}
 	}
 	swap(quick_sort, array_start, j);
-	print(quick_sort);
 	return j;
 }
-// quick_sort->array[i] <= quick_sort->array[array_start] primo if
-
-// quick_sort->array[j] > quick_sort->array[array_start]  secondo if

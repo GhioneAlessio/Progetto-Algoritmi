@@ -1,3 +1,9 @@
+#include <stdio.h>
+int Partition(int array[], int array_start, int array_end);
+int binary_search ( int array[], int target, int left, int right);
+void quickSort(int array[], int array_start, int array_end);
+void insertion_sort (int a[], int l);
+void swap(int array[], int p, int j);
 
 int binary_search ( int array[], int target, int left, int right) {
     if (left > right)
@@ -65,4 +71,12 @@ void swap(int array[], int p, int j) {
   array[j] = tmp;
 }
   
+int main(){
+  int array[] = {7, 0, 3, 1, 6, 2, 4, 5, 8, 11, 9, 14, 13, 12, 10};
+  quickSort(array, 0, 15);
+  for(int i = 0; i < 15; i++){
+    printf("%d ", array[i]);
+  }
+  return 0;
+}
   
