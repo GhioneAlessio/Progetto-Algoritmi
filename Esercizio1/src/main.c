@@ -1,8 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
-#include "../modules/quicksort.h"
+#include "../modules/sort.h"
 
 struct record{
   int id;
@@ -102,12 +103,12 @@ static  void free_array(QuickSort* array) {
 static  void print_array(QuickSort* array){
   unsigned long el_num =  quick_sort_size(array);
   struct record *array_element;
-  
-  printf("\nQUICKSORT ARRAY OF RECORDS\n");
+  FILE *fp = fopen("output.csv", "w");
+  //printf("\nQUICKSORT ARRAY OF RECORDS\n");
   
   for(unsigned long i=0;i<el_num;i++){
     array_element = (struct record *)quick_sort_get(array, i);
-    printf("<%d,%20s, %15d, %20.8f>\n",array_element->id, array_element->field1, array_element->field2, array_element->field3); 
+    fprintf(fp, "%d,%s,%d,%f\n", array_element->id, array_element->field1, array_element->field2, array_element->field3); 
   }
 }
 
@@ -122,12 +123,14 @@ static void load_array(const char* file_name, QuickSort* array){
     fprintf(stderr,"main: unable to open the file");
     exit(EXIT_FAILURE);
   }
-  while(fgets(buffer,buf_size,fp) != NULL){  
+  //int i = 0; 
+  while(fgets(buffer,buf_size,fp) != NULL /*&& i != 1000000*/){  
     read_line_p = malloc((strlen(buffer)+1)*sizeof(char));
     if(read_line_p == NULL){
       fprintf(stderr,"main: unable to allocate memory for the read line");
       exit(EXIT_FAILURE);
     }   
+   //i++;
     strcpy(read_line_p,buffer);   
     char *id_in_read_line_p = strtok(read_line_p,",");
     char *field1_in_read_line_p = strtok(NULL,",");
@@ -164,8 +167,10 @@ static void load_array(const char* file_name, QuickSort* array){
 static  void test_with_comparison_function(const char* file_name, int (*compare)(void*, void*)) {
   QuickSort* array = quick_sort_create(compare);
   load_array(file_name, array);
-  print_array(array);
-  quickSort(array, 0, quick_sort_size(array)-1);
+  clock_t time = clock();
+  //quickSort(array, 0, quick_sort_size(array)-1);
+  insertion_sort(array, quick_sort_size(array)-1);
+  printf("It took %f seconds to order the array\n", ((float)(clock() - time)/CLOCKS_PER_SEC));
   print_array(array);
   free_array(array);
 }
@@ -176,8 +181,10 @@ int main(int argc, char const *argv[]) {
     printf("Usage: quick_sort_main <file_name>\n");
     exit(EXIT_FAILURE);
   }
-//  test_with_comparison_function(argv[1], precedes_record_id);
-  test_with_comparison_function(argv[1], precedes_record_id);   
+  //test_with_comparison_function(argv[1], precedes_record_id);
+  test_with_comparison_function(argv[1], precedes_record_field1);   
+  //test_with_comparison_function(argv[1], precedes_record_field2);   
+  //test_with_comparison_function(argv[1], precedes_record_field3);   
 
   return (EXIT_SUCCESS);
 }
