@@ -54,6 +54,7 @@ void sort_add(Sort *sort, void *element){
   (sort->size)++;
 }
 
+/* Returns the element at i index */
 void *sort_get(Sort *sort, unsigned long i){	
   if (sort == NULL){
     fprintf(stderr, "sort_get: unable to allocate the memory");
@@ -83,57 +84,21 @@ void swap(Sort *sort, int p, int j){
 }
 
 /*** Quicksort ***/
-
+/*
+ * quick_sort: Check base condition, if parametres are correct partition is called and the pivot is returned. (?)
+ * Then quick_sort is called on the subarrays.  
+*/
 void quick_sort(Sort *sort, int low, int high){
   // base condition
   if (low >= high){
     return;
   }
-  // rearrange elements across pivot
   int pivot = partition(sort, low, high); 
-  // recur on subarray containing elements that are less than the pivot
   quick_sort(sort, low, pivot);
-  // recur on subarray containing elements that are more than the pivot
   quick_sort(sort, pivot + 1, high);
 }
-/*
-void quick_sort(Sort *sort, int array_start, int array_end){
-  while (array_start < array_end){
-    int pivot = partition(quick_sort, array_start, array_end);
-    if (pivot - array_start < array_end - pivot){
-      quickSort(quick_sort, array_start, pivot - 1);
-      array_start = pivot + 1;
-    }
-    else{
-      quickSort(quick_sort, pivot + 1, array_end);
-      array_end = pivot - 1;
-    }
-  }
-}*/
-/*
-int partition(Sort *sort, int array_start, int array_end){
-  int i = array_start + 1, j = array_end, tmp;
-  while (i <= j){ // array[i] <= array[array_start]
-    tmp = (sort->precedes(sort->array[i], sort->array[array_start]));
-    if ( tmp || (!(tmp) && !(sort->precedes(sort->array[array_start], sort->array[i]) == 1))){
-      i = i + 1;
-    }
-    else{//array[j] > array[array_start]
-      if (sort->precedes(sort->array[array_start], sort->array[j]) == 1){
-        j = j - 1;
-      }
-      else{
-        swap(sort, i, j);
-        i = i + 1;
-        j = j - 1;
-      }
-    }
-  }
-  swap(sort, array_start, j);
-  return j;
-}*/
 
-// Partition using Hoare's Partitioning scheme
+/* Partition using Hoare's Partitioning scheme */
 int partition(Sort *sort, int array_start, int array_end){	
   int i = array_start - 1;
   int j = array_end + 1;
@@ -152,6 +117,11 @@ int partition(Sort *sort, int array_start, int array_end){
 }
 
 /*** Binary Insertion Sort ***/
+/*  (????) 
+ * binary_search: mid is set to *parte intera inferiore*. 
+ * If item is in mid position, mid + 1 is returned.
+ * else if item is greater ...... 
+ */
 int binary_search(Sort *sort, void *item, int low, int high){	
   while (low <= high) {
     int mid = low + (high - low) / 2;
@@ -165,15 +135,17 @@ int binary_search(Sort *sort, void *item, int low, int high){
   return low;
 }
 
+/*  (????)
+ * insertion_sort: finds the location where selected (item at i index) should be inseretd 
+ * calling binary_search(), then moves all elements after location to create space
+ */
 void insertion_sort(Sort *sort, int n){	
   int i, loc, j, k;
   void *selected; 
   for (i = 1; i <= n; ++i) {
     j = i - 1;
     selected = sort->array[i];
-    // find location where selected should be inseretd
     loc = binary_search(sort, selected, 0, j);
-    // Move all elements after location to create space
     while (j >= loc) {
       sort->array[j + 1] =  sort->array[j];
       j--;
