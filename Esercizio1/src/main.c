@@ -165,7 +165,7 @@ static  void test_with_comparison_function(const char* file_name, int (*compare)
   Sort* array = sort_create(compare);
   load_array(file_name, array);
   clock_t time = clock();
-  //quickSort(array, 0, sort_size(array)-1);
+  //quick_sort(array, 0, sort_size(array)-1);
   insertion_sort(array, sort_size(array)-1);
   printf("It took %f seconds to order the array\n", ((float)(clock() - time)/CLOCKS_PER_SEC));
   print_array(array);

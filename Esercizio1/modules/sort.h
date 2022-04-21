@@ -17,7 +17,7 @@ void* sort_get(Sort *, unsigned long);
 void* sort_free_memory(Sort *);
 
 int partition(Sort *sort, int array_start, int array_end);
-void quickSort(Sort *sort, int array_start, int array_end);
+void quick_sort(Sort *sort, int array_start, int array_end);
 
 int binary_search(Sort *sort, void* target, int left, int right);
 void insertion_sort (Sort *sort, int length);
