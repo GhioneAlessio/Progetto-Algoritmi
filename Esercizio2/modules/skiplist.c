@@ -32,7 +32,7 @@ void SkipList_insert(SkipList *list, void* elem){
     list->max_level = new->size;
   
   Node *tmp = list->head;
-  for(int k = (int)(list->max_level) -1; k >= 0; k--){
+  for(int k = (list->max_level) -1; k >= 0; k--){ 
     if(tmp->next[k] == NULL || list->compare(elem, tmp->next[k]->item) < 0){
       if(k < (int)new->size){
         new->next[k] = tmp->next[k];
@@ -47,7 +47,8 @@ void SkipList_insert(SkipList *list, void* elem){
 
 int random_Level(){
   int lvl = 1;
-  while(random() < 0.5 && lvl < MAX_HEIGHT)
+    
+  while((rand()%100)/100 < 0.5 && lvl < MAX_HEIGHT)
     lvl++;
 
   return lvl;
@@ -55,12 +56,12 @@ int random_Level(){
 
 void* SkipList_search(SkipList *list, void* item){
   Node *x = list->head;
-  for(int i = list->max_level; i > 1; i--){
+  for(int i = (list->max_level)-1; i >=0; i--){
     while(x->next[i]->item < item){
       x = x->next[i];
     }
   }
-  x = x->next[1];
+  x = x->next[0];
   if(x->item == item)
     return x->item;
   else 
