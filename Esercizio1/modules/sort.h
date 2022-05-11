@@ -51,14 +51,14 @@ void* sort_free_memory(Sort *);
  * They move towords each other until there's an inversion to be made. 
  * When the indices meet, the procedure stops and the last index is returned. 
  */
-int partition(Sort *sort, int array_start, int array_end, int x);
+int partition(Sort *sort, int array_start, int array_end);
 
 /*
  * quick_sort: Check base condition, if parametres are correct 
  * partition is called and the result is stored. 
  * Then quick_sort is called on the subarrays.  
 */
-void quick_sort(Sort *sort, int array_start, int array_end, int x);
+void quick_sort(Sort *sort, int array_start, int array_end);
 
 /**********BINARY INSERTION SORT**********/
 /*   

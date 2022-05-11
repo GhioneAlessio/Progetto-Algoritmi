@@ -83,36 +83,19 @@ void swap(Sort *sort, int p, int j){
 }
 
 /*** Quicksort ***/
-void quick_sort(Sort *sort, int low, int high, int x){
+void quick_sort(Sort *sort, int low, int high){
   if(low < high){
-    int pi = partition(sort, low, high, x);
-    quick_sort(sort, low, pi, x);
-    quick_sort(sort, pi + 1, high,x);
+    int pi = partition(sort, low, high);
+    quick_sort(sort, low, pi);
+    quick_sort(sort, pi + 1, high);
   }
 }
 
-int partition(Sort *sort, int array_start, int array_end, int x){	
+int partition(Sort *sort, int array_start, int array_end){	
   void** pivot;
-  int tmp;
-  switch (x)
-  {
-  case 1:
-    pivot = sort->array[array_start];
-    break;
-  case 2: 
-    pivot = sort->array[array_end];
-    swap(sort, array_start, array_end);
-    break;
-  case 3: 
-    pivot = sort->array[(array_end+array_start)/2];
-    swap(sort, array_start, (array_end+array_start)/2);
-    break;
-  case 4:
-    tmp = (rand() % (array_end - array_start + 1)) + array_start;
-    pivot = sort->array[tmp];
-    swap(sort, array_start, tmp);
-    break;
-  }
+  pivot = sort->array[(array_end+array_start)/2];
+  swap(sort, array_start, (array_end+array_start)/2);
+
   int i = array_start - 1;
   int j = array_end + 1;
   while (1){
