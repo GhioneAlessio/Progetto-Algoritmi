@@ -14,6 +14,13 @@ struct _Sentence
   int word_count;
 };
 
+void sentence_free(Sentence *sent){
+  for(int i = 0; i < sent->word_count; i++)
+    free(sent->word_list[i]);
+  free(sent->word_list);
+  free(sent);
+}
+
 static int precedes_string(void* r1_p,void* r2_p){
   if (r1_p == NULL){
     fprintf(stderr, "precedes_record_field1: the first parameter is a null pointer");
@@ -38,8 +45,8 @@ void read_file(const char* file_name, SkipList *skip_list){
   char buffer[1024];
   int buf_size = 1024;
 	int count = 0;
-  printf("\nLoading data from file...\n");
-  while(fgets(buffer, buf_size, fp)!= NULL && count < 50){
+  printf("\nLoading dictionary...\n");
+  while(fgets(buffer, buf_size, fp)!= NULL){
     read_line_p = malloc((strlen(buffer)+1)*sizeof(char));
     if(read_line_p == NULL){
       fprintf(stderr,"main: unable to allocate memory for the read line\n");
@@ -47,9 +54,10 @@ void read_file(const char* file_name, SkipList *skip_list){
     }
     strcpy(read_line_p,buffer);
 	  read_line_p[strlen(read_line_p) -1] = '\0'; // metto il fine stringa un carattere prima, tolgo \n 
-    SkipList_insert(skip_list, (void *)read_line_p);
-	count++;
+    skiplist_insert(skip_list, (void *)read_line_p);
+	  count++;
   }
+  printf("Dictionary loaded\n");
   fclose(fp);
 }
 
@@ -62,7 +70,7 @@ Sentence *read_sentence(const char* file_name, Sentence *sentence){
   int word_i = 0;
   char word[1024];
   memset(word, 0, sizeof(word));
-  printf("\nLoading data from file2...\n");
+  printf("\nLoading and correcting sentence...\n");
   char ch = fgetc(fp);
   while(ch != EOF){
                             
@@ -73,6 +81,7 @@ Sentence *read_sentence(const char* file_name, Sentence *sentence){
     }
     
     else if(word_i > 0){
+      word[word_i]= '\0';
       char *tmp_word = malloc((strlen(word)+1)*sizeof(char));
       strcpy(tmp_word, word);  
       if(sentence->word_count  >= sentence->sentence_size){
@@ -92,7 +101,7 @@ Sentence *read_sentence(const char* file_name, Sentence *sentence){
 
 void correct_file(Sentence *sentence, SkipList *dictionary){
   for(int i = 0; i < sentence->word_count; i++){
-    if(SkipList_search(dictionary, sentence->word_list[i]) == NULL){
+    if(skiplist_search(dictionary, sentence->word_list[i]) == NULL){
       printf("%s\n", sentence->word_list[i]);
     }
   }
@@ -115,19 +124,21 @@ int main(int argc, char const *argv[]) {
     printf("Too few arguments\n");  
     exit(EXIT_FAILURE);
   }
-  srand(time(NULL));
-  SkipList *dictionary_list = SkipList_create(precedes_string);
+  clock_t time = clock();
+  srand(time);
+  SkipList *dictionary_list = skiplist_create(precedes_string);
   read_file(argv[1], dictionary_list);
-  
   Sentence *sentence = (Sentence *)malloc(sizeof(Sentence));
   if(sentence == NULL){
     printf("Main - sentence : Unable to allocate memory\n");
     exit(EXIT_FAILURE);
   }
-  sentence->sentence_size = 2;
+  sentence->sentence_size = 1;
   sentence->word_count = 0;
   sentence->word_list = malloc(sizeof(char *) * sentence->sentence_size);
   sentence = read_sentence(argv[2], sentence);
   correct_file(sentence, dictionary_list);
+  sentence_free(sentence);
+  skiplist_free(dictionary_list);
   return 0;
 }

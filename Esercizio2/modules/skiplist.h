@@ -19,12 +19,12 @@ struct _Node {
   void *item;
 };
 
-SkipList* SkipList_create(int (*precedes)(void*, void*));
-Node* create_Node(void* elem, int lvl);
-int random_Level();
-void SkipList_insert(SkipList *list, void* elem);
-void* SkipList_search(SkipList *list, void* item);
-void SkipList_free(SkipList *skip_list);
-void Node_Free(Node *node);
+SkipList* skiplist_create(int (*precedes)(void*, void*));
+Node* create_node(void* elem, int lvl);
+int random_level();
+void skiplist_insert(SkipList *list, void* elem);
+void* skiplist_search(SkipList *list, void* item);
+void skiplist_free(SkipList *skip_list);
+void node_Free(Node *node);
 void print_list(SkipList *skip_list);
 #endif
