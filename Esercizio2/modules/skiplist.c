@@ -2,6 +2,9 @@
 #include <stdlib.h>
 #include "skiplist.h"
 
+/*
+ * It creates the SkipList and it initialises it.
+ */
 SkipList* skiplist_create(int (*precedes)(void*, void*)){
   SkipList* skip_list = (SkipList *)malloc(sizeof(SkipList));
    if (skip_list == NULL){
@@ -14,6 +17,9 @@ SkipList* skiplist_create(int (*precedes)(void*, void*)){
   return skip_list;
 } 
 
+/*
+ * It creates the Node and it initialises it.
+ */
 Node* create_node(void* elem, int lvl){
   Node *new_node = malloc(sizeof(Node));
   new_node->size = lvl;
@@ -69,7 +75,7 @@ void* skiplist_search(SkipList *list, void* item){
 
 void skiplist_free(SkipList *list){
   if(list == NULL){
-	  fprintf(stderr, "SkipList_free: unable to allocate the memory\n");
+	  fprintf(stderr, "SkipList_free: unable to deallocate the memory\n");
 	  exit(EXIT_FAILURE);
   }
   Node *tmp;

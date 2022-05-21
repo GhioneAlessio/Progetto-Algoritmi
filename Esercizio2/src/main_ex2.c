@@ -7,8 +7,7 @@
 
 typedef struct _Sentence Sentence;
 
-struct _Sentence
-{
+struct _Sentence{
   char **word_list;
   int sentence_size;
   int word_count;
@@ -21,6 +20,11 @@ void sentence_free(Sentence *sent){
   free(sent);
 }
 
+/* 
+ * It takes as input two pointers.
+ * It returns 1 if the string ofa the first pointer is less than 
+ * the string of the second one, 0 if equal, -1 otherwise.
+ */
 static int precedes_string(void* r1_p,void* r2_p){
   if (r1_p == NULL){
     fprintf(stderr, "precedes_record_field1: the first parameter is a null pointer");
@@ -33,6 +37,9 @@ static int precedes_string(void* r1_p,void* r2_p){
   return strcmp(r1_p, r2_p);
 }
 
+/*
+ * It reads the input file containing the dictionary inserting the words in a SkipList.
+ */
 void read_file(const char* file_name, SkipList *skip_list){
 
   FILE *fp = fopen(file_name, "r");
@@ -44,7 +51,6 @@ void read_file(const char* file_name, SkipList *skip_list){
   char *read_line_p;
   char buffer[1024];
   int buf_size = 1024;
-	int count = 0;
   printf("\nLoading dictionary...\n");
   while(fgets(buffer, buf_size, fp)!= NULL){
     read_line_p = malloc((strlen(buffer)+1)*sizeof(char));
@@ -53,14 +59,17 @@ void read_file(const char* file_name, SkipList *skip_list){
       exit(EXIT_FAILURE);
     }
     strcpy(read_line_p,buffer);
-	  read_line_p[strlen(read_line_p) -1] = '\0'; // metto il fine stringa un carattere prima, tolgo \n 
+	read_line_p[strlen(read_line_p) -1] = '\0'; // metto il fine stringa un carattere prima, tolgo \n 
     skiplist_insert(skip_list, (void *)read_line_p);
-	  count++;
   }
   printf("Dictionary loaded\n");
   fclose(fp);
 }
 
+/*
+ * It reads the input file containing the sentences 
+ * inserting the words in the Sentence struct.
+ */
 Sentence *read_sentence(const char* file_name, Sentence *sentence){
   FILE *fp = fopen(file_name, "r");
   if(fp == NULL){
@@ -98,7 +107,11 @@ Sentence *read_sentence(const char* file_name, Sentence *sentence){
   fclose(fp);
   return sentence;
   }
-
+  
+/*
+ * Using skiplist_search, it corrects the file and prints the words 
+ * that are not in the dictionary.
+ */
 void correct_file(Sentence *sentence, SkipList *dictionary){
   for(int i = 0; i < sentence->word_count; i++){
     if(skiplist_search(dictionary, sentence->word_list[i]) == NULL){
@@ -107,18 +120,9 @@ void correct_file(Sentence *sentence, SkipList *dictionary){
   }
 }
 
-void print_list(SkipList *skip_list){
-	printf("print\n");
-  Node *current_node = skip_list->head;
-  int cont = 0;
-  while (current_node != NULL) {
-    printf("%d - %s\n", cont,(char *) (current_node->item));
-    current_node = current_node->next[0];
-	  cont++;
-  }
-  printf("fffff\n");
-}
-
+/*
+ * It takes the dictionary file and the file to be corrected as input.
+ */
 int main(int argc, char const *argv[]) {
   if(argc < 3) {
     printf("Too few arguments\n");  
@@ -137,7 +141,9 @@ int main(int argc, char const *argv[]) {
   sentence->word_count = 0;
   sentence->word_list = malloc(sizeof(char *) * sentence->sentence_size);
   sentence = read_sentence(argv[2], sentence);
+  time = clock();
   correct_file(sentence, dictionary_list);
+  printf("It took %f seconds to order the array\n", ((float)(clock() - time)/CLOCKS_PER_SEC));
   sentence_free(sentence);
   skiplist_free(dictionary_list);
   return 0;
