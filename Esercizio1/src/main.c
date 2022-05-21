@@ -12,9 +12,11 @@ struct Record{
   double field3;
 };
 
-//It takes as input two pointers to struct record.
-//It returns 1 if the integer field of the first record is less than 
-//the integer field of the second one (0 otherwise)
+/*
+ * It takes as input two pointers to struct record.
+ * It returns 1 if the integer field of the first record is less than 
+ * the integer field of the second one, 0 if equal, -1 otherwise.
+ */
 static int precedes_record_id(void* r1_p,void* r2_p){
   if (r1_p == NULL){
     fprintf(stderr, "precedes_record_id: the first parameter is a null pointer\n");
@@ -35,10 +37,11 @@ static int precedes_record_id(void* r1_p,void* r2_p){
 }
 
 
-///It takes as input two pointers to struct record.
-//It returns 1 iff the string field of the first record is less than 
-//the string field of the second one (0 otherwise)
-
+/*
+ * It takes as input two pointers to struct record.
+ * It returns 1 if the string field of the first record is less than 
+ * the string field of the second one, 0 if equal, -1 otherwise.
+ */
 static int precedes_record_field1(void* r1_p,void* r2_p){
   if (r1_p == NULL){
     fprintf(stderr, "precedes_record_field1: the first parameter is a null pointer\n");
@@ -50,14 +53,14 @@ static int precedes_record_field1(void* r1_p,void* r2_p){
   }
   struct Record *rec1_p = (struct Record *)r1_p;
   struct Record *rec2_p = (struct Record *)r2_p;
-  if (strcmp(rec1_p->field1, rec2_p->field1) < 0)
-    return 1;
-  else if(strcmp(rec1_p->field1, rec2_p->field1) == 0)
-    return 0;
-  else 
-    return -1;
+  return strcmp(rec1_p->field1, rec2_p->field1);
 }
 
+/*
+ * It takes as input two pointers to struct record.
+ * It returns 1 if the integer field of the first record is less than 
+ * the integer field of the second one, 0 if equal, -1 otherwise.
+ */
 static int precedes_record_field2(void* r1_p,void* r2_p){
   if (r1_p == NULL){
     fprintf(stderr, "precedes_record_field2: the first parameter is a null pointer\n");
@@ -77,6 +80,11 @@ static int precedes_record_field2(void* r1_p,void* r2_p){
     return -1;
 }
 
+/*
+ * It takes as input two pointers to struct record.
+ * It returns 1 if the float field of the first record is less than 
+ * the float field of the second one, 0 if equal, -1 otherwise.
+ */
 static int precedes_record_field3(void* r1_p,void* r2_p){
   if (r1_p == NULL){
     fprintf(stderr, "precedes_record_field3: the first parameter is a null pointer\n");
@@ -95,6 +103,7 @@ static int precedes_record_field3(void* r1_p,void* r2_p){
   else
     return -1;
 }
+
 
 static  void free_array(Sort* array) {
   unsigned long  el_num =  sort_size(array);
@@ -116,6 +125,9 @@ static  void print_array(Sort* array, char * output_file){
   }
 }
 
+/*
+ * It loads the records' fields by opening the input file and reading it line by line.
+ */
 static void load_array(const char* file_name, Sort* array){
   char *read_line_p;
   char buffer[1024];
@@ -127,14 +139,14 @@ static void load_array(const char* file_name, Sort* array){
     fprintf(stderr,"main: unable to open the file");
     exit(EXIT_FAILURE);
   }
-  //int i = 0; 
-  while(fgets(buffer,buf_size,fp) != NULL /*&& i != 1000000*/){  
+   
+  while(fgets(buffer,buf_size,fp) != NULL){  
     read_line_p = malloc((strlen(buffer)+1)*sizeof(char));
     if(read_line_p == NULL){
       fprintf(stderr,"main: unable to allocate memory for the read line");
       exit(EXIT_FAILURE);
     }   
-    //i++;
+    
     strcpy(read_line_p,buffer);   
     char *id_in_read_line_p = strtok(read_line_p,",");
     char *field1_in_read_line_p = strtok(NULL,",");
@@ -165,6 +177,10 @@ static void load_array(const char* file_name, Sort* array){
   printf("\nData loaded\n");
 }
 
+
+/*
+ * Aux functions used by the main to sort the records as indicated by the user in the make file.
+ */
 static  void test_with_comparison_function(const char* file_name, int (*compare)(void*, void*), int flag, char * output_file) {
   Sort* array = sort_create(compare);
   load_array(file_name, array);
