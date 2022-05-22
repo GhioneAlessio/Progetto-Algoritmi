@@ -53,7 +53,12 @@ static int precedes_record_field1(void* r1_p,void* r2_p){
   }
   struct Record *rec1_p = (struct Record *)r1_p;
   struct Record *rec2_p = (struct Record *)r2_p;
-  return strcmp(rec1_p->field1, rec2_p->field1);
+  if (strcmp(rec1_p->field1, rec2_p->field1) < 0)
+    return 1;
+  else if(strcmp(rec1_p->field1, rec2_p->field1) == 0)
+    return 0;
+  else 
+    return -1;
 }
 
 /*

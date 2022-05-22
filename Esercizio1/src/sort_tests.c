@@ -30,7 +30,12 @@ static int precedes_float (void* f1_p, void* f2_p){
 static int precedes_char (void* c1_p, void* c2_p){
   char* char1_p = (char*) c1_p;
   char* char2_p = (char*) c2_p;
-  return strcmp(char1_p,char2_p);
+  if (strcmp(char1_p,char2_p) < 0)
+    return 1;
+  else if(strcmp(char1_p,char2_p) == 0)
+    return 0;
+  else 
+    return -1;
 }
 
 static int i1, i2, i3;
