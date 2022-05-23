@@ -141,9 +141,8 @@ int main(int argc, char const *argv[]) {
   sentence->word_count = 0;
   sentence->word_list = malloc(sizeof(char *) * sentence->sentence_size);
   sentence = read_sentence(argv[2], sentence);
-  time = clock();
   correct_file(sentence, dictionary_list);
-  printf("It took %f seconds to order the array\n", ((float)(clock() - time)/CLOCKS_PER_SEC));
+  printf("It took %f seconds to upload the dictionary and correct the sentence\n", ((float)(clock() - time)/CLOCKS_PER_SEC));
   sentence_free(sentence);
   skiplist_free(dictionary_list);
   return 0;
