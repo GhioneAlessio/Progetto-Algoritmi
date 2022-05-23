@@ -1,111 +1,126 @@
 package src;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 
 class Heap<T> {
 
-  public ArrayList<T> array = null;
+  private ArrayList<T> heap = null;
   private Comparator<? super T> compare = null;
-  private HashMap<T, Integer> list_index;
+  private HashMap<T, Integer> mapOfIndex;
 
   public Heap(Comparator<? super T> compare) {
-    this.array = new ArrayList<T>();
+    this.heap = new ArrayList<T>();
     this.compare = compare;
-    this.list_index = new HashMap<T, Integer>();
+    this.mapOfIndex = new HashMap<T, Integer>();
   }
 
-  public T left_elem(T elem) throws IllegalArgumentException{
-    if (!list_index.containsKey(elem))
+  public T leftElem(T elem) throws IllegalArgumentException {
+    if (!mapOfIndex.containsKey(elem))
       throw new IllegalArgumentException("Heap does not contain the specified element");
-  
-    int ind = list_index.get(elem);
 
-    if (2 * ind <= this.get_size())
-      return this.array.get(2 * ind);
+    int ind = mapOfIndex.get(elem);
+
+    if (2 * ind <= this.getSize())
+      return this.heap.get(2 * ind);
     else
-      return this.array.get(ind);
+      return this.heap.get(ind);
   }
 
-  public T right_elem(T elem) throws IllegalArgumentException{
-    if (!list_index.containsKey(elem))
+  public T rigthElem(T elem) throws IllegalArgumentException {
+    if (!mapOfIndex.containsKey(elem))
       throw new IllegalArgumentException("Heap does not contain the specified element");
-  
-    int ind = list_index.get(elem);
-   
-    if ((2 * ind) + 1 <= this.get_size())
-      return this.array.get((2 * ind) + 1);
+
+    int ind = mapOfIndex.get(elem);
+
+    if ((2 * ind) + 1 <= this.getSize())
+      return this.heap.get((2 * ind) + 1);
     else
-      return this.array.get(ind);
+      return this.heap.get(ind);
   }
 
-  public T parent_elem(T elem) throws IllegalArgumentException{
-    if (!list_index.containsKey(elem))
+  public T parentElem(T elem) throws IllegalArgumentException {
+    if (!mapOfIndex.containsKey(elem))
       throw new IllegalArgumentException("Heap does not contain the specified element");
-  
-    int parent_ind = this.list_index.get(elem)/2;
-    return this.array.get(parent_ind);
+
+    int parentInd = this.mapOfIndex.get(elem) / 2;
+    return this.heap.get(parentInd);
   }
 
-  public int heap_insert(T x){
-    this.array.add(x);
-    int p = this.array.size()-1;
-    this.list_index.put(x, p);
-    T elem = this.array.get(p);
-    while(p > 0 && (this.compare).compare(elem , parent_elem(array.get(p))) < 0){
-      swap(p, p/2);
-      p = p/2;
-      elem = this.array.get(p);
+  public int heapInsert(T x) {
+    this.heap.add(x);
+    int p = this.heap.size() - 1;
+    this.mapOfIndex.put(x, p);
+    T elem = this.heap.get(p);
+    while (p > 0 && (this.compare).compare(elem, parentElem(heap.get(p))) < 0) {
+      swap(p, p / 2);
+      p = p / 2;
+      elem = this.heap.get(p);
     }
     return 0;
   }
 
   private void swap(int a, int b) {
-    T tmp1 = this.array.get(a);
-    T tmp2 = this.array.get(b);
-    this.array.set(a, tmp2);
-    this.array.set(b, tmp1);
-    this.list_index.replace(tmp2, a);
-    this.list_index.replace(tmp1, b);
+    T tmp1 = this.heap.get(a);
+    T tmp2 = this.heap.get(b);
+    this.heap.set(a, tmp2);
+    this.heap.set(b, tmp1);
+    this.mapOfIndex.replace(tmp2, a);
+    this.mapOfIndex.replace(tmp1, b);
   }
 
-  public int get_size() {
-    return this.array.size();
+  public int getSize() {
+    return this.heap.size();
   }
 
-  public T get_min_element(){
-    return this.array.get(0);
+  public T getMinElement() {
+    return this.heap.get(0);
   }
 
-  public void remove_min(){
-    this.list_index.remove(get_min_element());
-    for(int i = 0; i < this.get_size()-1; i++){
-      this.array.set(i, this.get_elem(i+1));
-      this.list_index.replace(this.array.get(i), i);
+  public void extractMin() {
+    heap.set(0, this.getElem(this.getSize()-1));
+    heap.remove(this.getElem(this.getSize()-1));
+    heapify(0);
+  }
+
+  private void heapify(int index){
+    int m;
+    T elem = this.getElem(index);
+    T leftElem = leftElem(elem);
+    T rightElem = rigthElem(elem);
+    if((this.compare).compare(elem, leftElem) < 0 && (this.compare).compare(elem, rightElem) < 0)
+      m = index;
+    else if((this.compare).compare(leftElem, elem) < 0 && (this.compare).compare(leftElem, rightElem) < 0)
+      m = this.mapOfIndex.get(leftElem);
+    else
+      m = this.mapOfIndex.get(rightElem);
+    if(m != index){
+      swap(m, index);
+      heapify(m);
     }
-    this.array.remove(this.get_size()-1);
   }
 
-  public T get_elem(int i) throws NullPointerException{
-    if(i < 0 || i > this.get_size())
+  public T getElem(int i) throws NullPointerException {
+    if (i < 0 || i > this.getSize())
       throw new NullPointerException("Index ouf od bound");
-    return this.array.get(i);
+    return this.heap.get(i);
   }
 
-  public void decrease_element(int ind, T x) throws HeapException{
-    if((this.compare).compare(this.array.get(ind), x) < 0){
+  public void decreaseElement(int ind, T x) throws HeapException {
+    if ((this.compare).compare(this.heap.get(ind), x) < 0) {
       throw new HeapException("The new value has to be lower");
     }
-    this.list_index.remove(this.get_elem(ind));
-    this.list_index.put(x, ind);
-    this.array.set(ind,x);
-    T elem = this.array.get(ind);
+    this.mapOfIndex.remove(this.getElem(ind));
+    this.mapOfIndex.put(x, ind);
+    this.heap.set(ind, x);
+    T elem = this.heap.get(ind);
 
-    while(ind > 0 && (this.compare).compare(elem , parent_elem(this.array.get(ind))) < 0){
-      swap(ind, ind/2);
-      ind = ind/2;
-      elem = this.array.get(ind);
+    while (ind > 0 && (this.compare).compare(elem, parentElem(this.heap.get(ind))) < 0) {
+      swap(ind, ind / 2);
+      ind = ind / 2;
+      elem = this.heap.get(ind);
     }
   }
-  
+
 }
