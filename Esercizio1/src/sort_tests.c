@@ -62,6 +62,8 @@ void setUp(void){
 
 void tearDown(void){
   sort_free_memory(sort_int);
+  sort_free_memory(sort_float);
+  sort_free_memory(sort_char);
 }
 
 static void test_sort_size_zero_el(void){
