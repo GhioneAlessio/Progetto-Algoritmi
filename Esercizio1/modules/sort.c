@@ -116,9 +116,9 @@ int partition(Sort *sort, int array_start, int array_end){
 int binary_search(Sort *sort, void *item, int low, int high){	
   while (low <= high){
     int mid = low + (high - low) / 2;
-    if (/*item == a[mid]*/(sort->precedes(sort->array[mid], item) == EQUAL_TO))
+    if ((sort->precedes(sort->array[mid], item) == EQUAL_TO))
       return mid + 1;
-    else if (/*item > a[mid]*/ sort->precedes(item, sort->array[mid]) == GREATER_THAN)  
+    else if (sort->precedes(item, sort->array[mid]) == GREATER_THAN)  
       low = mid + 1;
     else
       high = mid - 1;

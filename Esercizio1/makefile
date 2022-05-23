@@ -21,7 +21,7 @@ $(BINDIR)/sort_tests: $(OBJS_TEST)
 all: $(BINDIR)/main $(BINDIR)/sort_tests
 
 run:
-	cd bin/ && ./main ../records2.csv out.dump quicksort 1  && cd ..
+	cd bin/ && ./main ../records.csv out.dump quicksort 1  && cd ..
 
 test: $(BINDIR)/main $(BINDIR)/sort_tests
 	cd bin/ && ./sort_tests && cd ..
