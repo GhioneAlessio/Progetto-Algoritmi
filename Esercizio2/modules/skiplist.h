@@ -1,7 +1,7 @@
 #ifndef SKIP_LIST_H
 #define SKIP_LIST_H
 
-#define MAX_HEIGHT 20//numero massimo di puntatori che possono esserci in un singolo nodo della `skip_list`
+#define MAX_HEIGHT 1 //numero massimo di puntatori che possono esserci in un singolo nodo della `skip_list`
 
 
 typedef struct _SkipList SkipList;
