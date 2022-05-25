@@ -24,7 +24,7 @@ Node* create_node(void* elem, int lvl);
 int random_level();
 void skiplist_insert(SkipList *list, void* elem);
 void* skiplist_search(SkipList *list, void* item);
-void skiplist_free(SkipList *skip_list);
-void node_Free(Node *node);
+void skiplist_free(SkipList *skip_list, void (*free_elem)(void *));
+void node_free(Node *node, void (*free_elem)(void *));
 void print_list(SkipList *skip_list);
 #endif

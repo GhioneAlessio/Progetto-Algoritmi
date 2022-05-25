@@ -73,7 +73,7 @@ void* skiplist_search(SkipList *list, void* item){
 }
 
 
-void skiplist_free(SkipList *list){
+void skiplist_free(SkipList *list, void (*free_elem)(void *)){
   if(list == NULL){
 	  fprintf(stderr, "SkipList_free: unable to deallocate the memory\n");
 	  exit(EXIT_FAILURE);
@@ -82,13 +82,13 @@ void skiplist_free(SkipList *list){
   while(list->head != NULL){
     tmp = list->head;
     list->head = list->head->next[0];
-    node_Free(tmp);
+    node_free(tmp, free_elem);
   }
 	free(list);
 }
 
-void node_Free(Node *node){
-  free(node->item);
+void node_free(Node *node,  void (*free_elem)(void *)){
+  free_elem(node->item);
   free(node->next);
   free(node);
 }

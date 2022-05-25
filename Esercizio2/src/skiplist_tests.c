@@ -52,11 +52,13 @@ void setUp(void){
   c3 = "gamma";
   skiplist_char = skiplist_create(precedes_char);
 }
+void ignore(void * item){
+}
 
 void tearDown(void){
-//  skiplist_free(skiplist_int);
-//  skiplist_free(skiplist_float);
-//  skiplist_free(skiplist_char);
+  skiplist_free(skiplist_int, ignore);
+  skiplist_free(skiplist_float, ignore);
+  skiplist_free(skiplist_char, free);
 }
 
 static void test_skiplist_insert_one_search_one_int_el(){
