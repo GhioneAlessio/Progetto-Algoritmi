@@ -5,9 +5,9 @@
 #define EQUAL_TO 0
 #define GREATER_THAN -1
 
-typedef struct _Sort Sort;
+typedef struct S_Sort Sort;
 
-struct _Sort{
+struct S_Sort{
   void** array; 
   unsigned long array_capacity;
   unsigned long size;
@@ -62,10 +62,12 @@ void quick_sort(Sort *sort, int array_start, int array_end);
 
 /**********BINARY INSERTION SORT**********/
 /*   
- * binary_search: mid is set to *parte intera inferiore*. 
+ * binary_search: mid is mapped to the least integer greater than or 
+ * equal to x, by the ceiling function. 
  * If item is in mid position, mid + 1 is returned,  else if item is
  * greater it sets low to mid + 1, then returns it.
- * It is returned the index where insertion_sort() will insert the element to order the data.  
+ * It is returned the index where insertion_sort() will insert the 
+ * element to order the data.  
  */
 int binary_search(Sort *sort, void* target, int left, int right);
 

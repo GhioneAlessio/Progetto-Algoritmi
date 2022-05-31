@@ -142,7 +142,7 @@ static void load_array(const char* file_name, Sort* array){
   printf("\nLoading data from file...\n");
   fp = fopen(file_name,"r");
   if(fp == NULL){
-    fprintf(stderr,"main: unable to open the file");
+    fprintf(stderr,"main: unable to open the file\n");
     exit(EXIT_FAILURE);
   }
    
