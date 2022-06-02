@@ -7,8 +7,8 @@
  */
 SkipList* skiplist_create(int (*precedes)(void*, void*)){
   SkipList* skip_list = (SkipList *)malloc(sizeof(SkipList));
-   if (skip_list == NULL){
-    fprintf(stderr, "SkipList_create: unable to allocate the memory\n");
+  if (skip_list == NULL){
+    fprintf(stderr, "skipList_create: unable to allocate the memory\n");
     exit(EXIT_FAILURE);
   }
   skip_list->head = create_node(NULL, MAX_HEIGHT);
@@ -26,7 +26,7 @@ Node* create_node(void* elem, int lvl){
   new_node->item = elem;
   new_node->next = (Node **) malloc(sizeof(Node*) * new_node->size);
   for(int i = 0; i < new_node->size; i++){
-	new_node->next[i] = NULL; 
+	  new_node->next[i] = NULL; 
   }
   return new_node;
 }
@@ -43,7 +43,7 @@ void skiplist_insert(SkipList *list, void* elem){
         new->next[k] = tmp->next[k];
         tmp->next[k] = new;
       }
-    }else{
+    } else {
       tmp = tmp->next[k];
       k++;
     }
@@ -67,7 +67,7 @@ void* skiplist_search(SkipList *list, void* item){
   }
   x = x->next[0];
   if(x != NULL && list->compare(x->item, item) == 0)
-      return x->item;
+    return x->item;
 
   return NULL; 
 }
@@ -75,7 +75,7 @@ void* skiplist_search(SkipList *list, void* item){
 
 void skiplist_free(SkipList *list, void (*free_elem)(void *)){
   if(list == NULL){
-	  fprintf(stderr, "SkipList_free: unable to deallocate the memory\n");
+	  fprintf(stderr, "skipList_free: unable to deallocate the memory\n");
 	  exit(EXIT_FAILURE);
   }
   Node *tmp;
@@ -88,7 +88,8 @@ void skiplist_free(SkipList *list, void (*free_elem)(void *)){
 }
 
 void node_free(Node *node,  void (*free_elem)(void *)){
-  free_elem(node->item);
+  if(free_elem != NULL)
+    free_elem(node->item);
   free(node->next);
   free(node);
 }

@@ -13,41 +13,39 @@ struct _Sentence{
   int word_count;
 };
 
-void free_sentence(Sentence *sent){
-  for(int i = 0; i < sent->word_count; i++)
-    free(sent->word_list[i]);
-  free(sent->word_list);
-  free(sent);
+void free_sentence(Sentence *sentence){
+  for(int i = 0; i < sentence->word_count; i++)
+    free(sentence->word_list[i]);
+  free(sentence->word_list);
+  free(sentence);
 }
 
 /* 
  * It takes as input two pointers.
- * It returns 1 if the string ofa the first pointer is less than 
+ * It returns 1 if the string of the first pointer is less than 
  * the string of the second one, 0 if equal, -1 otherwise.
  */
-static int precedes_string(void* r1_p,void* r2_p){
-  if (r1_p == NULL){
-    fprintf(stderr, "precedes_record_field1: the first parameter is a null pointer");
+static int precedes_string(void* str1_p,void* str2_p){
+  if (str1_p == NULL){
+    fprintf(stderr, "precedes_string: the first parameter is a null pointer");
     exit(EXIT_FAILURE);
   }
-  if (r2_p == NULL){
-    fprintf(stderr, "precedes_record_field1: the second parameter is a null pointer");
+  if (str2_p == NULL){
+    fprintf(stderr, "precedes_string: the second parameter is a null pointer");
     exit(EXIT_FAILURE);
   }
-  return strcmp(r1_p, r2_p);
+  return strcmp(str1_p, str2_p);
 }
 
 /*
  * It reads the input file containing the dictionary inserting the words in a SkipList.
  */
 void read_file(const char* file_name, SkipList *skip_list){
-
   FILE *fp = fopen(file_name, "r");
   if(fp == NULL){
-    fprintf(stderr,"main: unable to open the file\n");
+    fprintf(stderr,"main: unable to open the dictionary\n");
     exit(EXIT_FAILURE);
   }
-
   char *read_line_p;
   char buffer[1024];
   int buf_size = 1024;
@@ -59,7 +57,7 @@ void read_file(const char* file_name, SkipList *skip_list){
       exit(EXIT_FAILURE);
     }
     strcpy(read_line_p,buffer);
-	read_line_p[strlen(read_line_p) -1] = '\0'; // metto il fine stringa un carattere prima, tolgo \n 
+    read_line_p[strlen(read_line_p) -1] = '\0'; /* metto il fine stringa un carattere prima, tolgo \n */
     skiplist_insert(skip_list, (void *)read_line_p);
   }
   printf("Dictionary loaded\n");
@@ -73,7 +71,7 @@ void read_file(const char* file_name, SkipList *skip_list){
 Sentence *read_sentence(const char* file_name, Sentence *sentence){
   FILE *fp = fopen(file_name, "r");
   if(fp == NULL){
-    fprintf(stderr,"main: unable to open the file2\n");
+    fprintf(stderr,"main: unable to open the file to correct\n");
     exit(EXIT_FAILURE);
   }
   int word_i = 0;
@@ -81,14 +79,12 @@ Sentence *read_sentence(const char* file_name, Sentence *sentence){
   memset(word, 0, sizeof(word));
   printf("\nLoading and correcting sentence...\n");
   char ch = fgetc(fp);
-  while(ch != EOF){
-                            
+  while(ch != EOF){                     
     if(isalpha (ch)){
       ch = tolower(ch);
       word[word_i] = ch;  
       word_i++;
     }
-    
     else if(word_i > 0){
       word[word_i]= '\0';
       char *tmp_word = malloc((strlen(word)+1)*sizeof(char));

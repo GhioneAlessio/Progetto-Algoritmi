@@ -52,13 +52,11 @@ void setUp(void){
   c3 = "gamma";
   skiplist_char = skiplist_create(precedes_char);
 }
-void ignore(void * item){
-}
 
 void tearDown(void){
-  skiplist_free(skiplist_int, ignore);
-  skiplist_free(skiplist_float, ignore);
-  skiplist_free(skiplist_char, free);
+  skiplist_free(skiplist_int, NULL);
+  skiplist_free(skiplist_float, NULL);
+  skiplist_free(skiplist_char, NULL);
 }
 
 static void test_skiplist_insert_one_search_one_int_el(){
@@ -72,8 +70,8 @@ static void test_skiplist_insert_one_search_one_float_el(){
 }
 
 static void test_skiplist_insert_one_search_one_char_el(){
-  skiplist_insert(skiplist_char, &c1);
-  TEST_ASSERT_EQUAL(skiplist_search(skiplist_char,&c1), &c1);
+  skiplist_insert(skiplist_char, c1);
+  TEST_ASSERT_EQUAL(skiplist_search(skiplist_char,c1), c1);
 }
 
 static void test_skiplist_insert_three_search_one_int_el(){
@@ -91,10 +89,10 @@ static void test_skiplist_insert_three_search_one_float_el(){
 }
 
 static void test_skiplist_insert_three_search_one_char_el(){
-  skiplist_insert(skiplist_char, &c3);
-  skiplist_insert(skiplist_char, &c1);
-  skiplist_insert(skiplist_char, &c2);
-  TEST_ASSERT_EQUAL(skiplist_search(skiplist_char,&c1), &c1);
+  skiplist_insert(skiplist_char, c3);
+  skiplist_insert(skiplist_char, c1);
+  skiplist_insert(skiplist_char, c2);
+  TEST_ASSERT_EQUAL(skiplist_search(skiplist_char,c1), c1);
 }
 
 static void test_skiplist_insert_search_not_found_int_el(){
@@ -108,8 +106,8 @@ static void test_skiplist_insert_search_not_found_float_el(){
 }
 
 static void test_skiplist_insert_search_not_found_char_el(){
-  skiplist_insert(skiplist_char, &c1);
-  TEST_ASSERT_NOT_EQUAL(skiplist_search(skiplist_char,&c2), &c1);
+  skiplist_insert(skiplist_char, c1);
+  TEST_ASSERT_NOT_EQUAL(skiplist_search(skiplist_char,c2), c1);
 }
 
 static void test_skiplist_search_empty_list_int_el(){
