@@ -17,17 +17,17 @@ struct Record{
  * It returns 1 if the integer field of the first record is less than 
  * the integer field of the second one, 0 if equal, -1 otherwise.
  */
-static int precedes_record_id(void* r1_p,void* r2_p){
-  if (r1_p == NULL){
+static int precedes_record_id(void* p1,void* p2){
+  if (p1 == NULL){
     fprintf(stderr, "precedes_record_id: the first parameter is a null pointer\n");
     exit(EXIT_FAILURE);
   }
-  if (r2_p == NULL){
+  if (p2 == NULL){
     fprintf(stderr, "precedes_record_id: the second parameter is a null pointer\n");
     exit(EXIT_FAILURE);
   }
-  struct Record *rec1_p = (struct Record *)r1_p;
-  struct Record *rec2_p = (struct Record *)r2_p;
+  struct Record *rec1_p = (struct Record *)p1;
+  struct Record *rec2_p = (struct Record *)p2;
   if (rec1_p->id < rec2_p->id)
     return 1;
   else if(rec1_p->id == rec2_p->id)
@@ -42,17 +42,17 @@ static int precedes_record_id(void* r1_p,void* r2_p){
  * It returns 1 if the string field of the first record is less than 
  * the string field of the second one, 0 if equal, -1 otherwise.
  */
-static int precedes_record_field1(void* r1_p,void* r2_p){
-  if (r1_p == NULL){
+static int precedes_record_field1(void* p1,void* p2){
+  if (p1 == NULL){
     fprintf(stderr, "precedes_record_field1: the first parameter is a null pointer\n");
     exit(EXIT_FAILURE);
   }
-  if (r2_p == NULL){
+  if (p2 == NULL){
     fprintf(stderr, "precedes_record_field1: the second parameter is a null pointer\n");
     exit(EXIT_FAILURE);
   }
-  struct Record *rec1_p = (struct Record *)r1_p;
-  struct Record *rec2_p = (struct Record *)r2_p;
+  struct Record *rec1_p = (struct Record *)p1;
+  struct Record *rec2_p = (struct Record *)p2;
    int str_cmp = strcmp(rec1_p->field1, rec2_p->field1);
   if ( str_cmp < 0)
     return 1;
@@ -67,17 +67,17 @@ static int precedes_record_field1(void* r1_p,void* r2_p){
  * It returns 1 if the integer field of the first record is less than 
  * the integer field of the second one, 0 if equal, -1 otherwise.
  */
-static int precedes_record_field2(void* r1_p,void* r2_p){
-  if (r1_p == NULL){
+static int precedes_record_field2(void* p1,void* p2){
+  if (p1 == NULL){
     fprintf(stderr, "precedes_record_field2: the first parameter is a null pointer\n");
     exit(EXIT_FAILURE);
   }
-  if (r2_p == NULL){
+  if (p2 == NULL){
     fprintf(stderr, "precedes_record_field2: the second parameter is a null pointer\n");
     exit(EXIT_FAILURE);
   }
-  struct Record *rec1_p = (struct Record *)r1_p;
-  struct Record *rec2_p = (struct Record *)r2_p;
+  struct Record *rec1_p = (struct Record *)p1;
+  struct Record *rec2_p = (struct Record *)p2;
   if (rec1_p->field2 < rec2_p->field2)
     return 1;
   else if (rec1_p->field2 == rec2_p->field2)
@@ -91,17 +91,17 @@ static int precedes_record_field2(void* r1_p,void* r2_p){
  * It returns 1 if the float field of the first record is less than 
  * the float field of the second one, 0 if equal, -1 otherwise.
  */
-static int precedes_record_field3(void* r1_p,void* r2_p){
-  if (r1_p == NULL){
+static int precedes_record_field3(void* p1,void* p2){
+  if (p1 == NULL){
     fprintf(stderr, "precedes_record_field3: the first parameter is a null pointer\n");
     exit(EXIT_FAILURE);
   }
-  if (r2_p == NULL){
+  if (p2 == NULL){
     fprintf(stderr, "precedes_record_field3: the second parameter is a null pointer\n");
     exit(EXIT_FAILURE);
   }
-  struct Record *rec1_p = (struct Record *)r1_p;
-  struct Record *rec2_p = (struct Record *)r2_p;
+  struct Record *rec1_p = (struct Record *)p1;
+  struct Record *rec2_p = (struct Record *)p2;
   if (rec1_p->field3 < rec2_p->field3)
     return 1;
   else if (rec1_p->field3 == rec2_p->field3)
@@ -112,8 +112,8 @@ static int precedes_record_field3(void* r1_p,void* r2_p){
 
 
 static  void free_array(Sort* array) {
-  unsigned long  el_num =  sort_size(array);
-  for(unsigned long i=0;i<el_num;i++){
+  unsigned long  size =  sort_size(array);
+  for(unsigned long i = 0; i < size; i++){
     struct Record *array_element = (struct Record *)sort_get(array, i);
     free(array_element->field1);
     free(array_element);
@@ -122,10 +122,10 @@ static  void free_array(Sort* array) {
 }
 
 static  void print_array(Sort* array, char * output_file){
-  unsigned long el_num =  sort_size(array);
+  unsigned long size =  sort_size(array);
   struct Record *array_element;
   FILE *fp = fopen(output_file, "w"); 
-  for(unsigned long i=0;i<el_num;i++){
+  for(unsigned long i = 0; i < size; i++){
     array_element = (struct Record *)sort_get(array, i);
     fprintf(fp, "%d,%s,%d,%f\n", array_element->id, array_element->field1, array_element->field2, array_element->field3); 
   }
@@ -152,8 +152,7 @@ static void load_array(const char* file_name, Sort* array){
       fprintf(stderr,"main: unable to allocate memory for the read line");
       exit(EXIT_FAILURE);
     }   
-    
-    strcpy(read_line_p,buffer);   
+    strcpy(read_line_p, buffer);   
     char *id_in_read_line_p = strtok(read_line_p,",");
     char *field1_in_read_line_p = strtok(NULL,",");
     char *field2_in_read_line_p = strtok(NULL,",");  
@@ -185,9 +184,10 @@ static void load_array(const char* file_name, Sort* array){
 
 
 /*
- * Aux functions used by the main to sort the records as indicated by the user in the make file.
+ * Aux function used by the main to sort the records 
+ * as indicated by the user in the makefile.
  */
-static  void test_with_comparison_function(const char* file_name, int (*compare)(void*, void*), int flag, char * output_file) {
+static  void aux_function(const char* file_name, int (*compare)(void*, void*), int flag, char * output_file) {
   Sort* array = sort_create(compare);
   load_array(file_name, array);
   clock_t time = clock();
@@ -209,7 +209,7 @@ static  void test_with_comparison_function(const char* file_name, int (*compare)
  * (4) a number from 0 to 3 to denote the field to order.
  */
 int main(int argc, char const *argv[]) {
-  int flag;
+  int algorithm;
   if(argc < 4) {
     printf("Too few arguments\n");  
     exit(EXIT_FAILURE);
@@ -218,26 +218,26 @@ int main(int argc, char const *argv[]) {
   char *output_file = (char *) argv[2];
   if(strcmp(argv[3], "quicksort") == 0){
 	printf("ORDERING WITH QUICKSORT ON FIELD %d\n", atoi(argv[4]));
-	flag = 0;
+	algorithm = 0;
   } else if (strcmp(argv[3], "binaryInsertionSort") == 0){
 	printf("ORDERING WITH BINARY INSERTION SORT ON FIELD %d\n", atoi(argv[4]));
-	flag = 1;
+	algorithm = 1;
   } else {
     printf("Not an algorithm\n");
 	exit(EXIT_FAILURE);
   }
   switch(atoi(argv[4])){
 	case 0:
-	  test_with_comparison_function(input_file, precedes_record_id, flag, output_file);
+	  aux_function(input_file, precedes_record_id, algorithm, output_file);
 	  break;
 	case 1:
-	  test_with_comparison_function(input_file, precedes_record_field1, flag, output_file);   
+	  aux_function(input_file, precedes_record_field1, algorithm, output_file);   
 	  break;
 	case 2:
-	  test_with_comparison_function(input_file, precedes_record_field2, flag, output_file);   
+	  aux_function(input_file, precedes_record_field2, algorithm, output_file);   
 	  break;
 	case 3:
-	  test_with_comparison_function(input_file, precedes_record_field3, flag, output_file);  
+	  aux_function(input_file, precedes_record_field3, algorithm, output_file);  
 	  break;
     default:
 	  printf("Not a field\n");

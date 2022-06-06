@@ -11,17 +11,17 @@
  */
 Sort *sort_create(int (*qs_precedes)(void *, void *)){	
   if (qs_precedes == NULL){
-	  fprintf(stderr, "sort_create: precedes parameter cannot be NULL");
+	  fprintf(stderr, "sort_create: precedes parameter cannot be NULL\n");
 	  exit(EXIT_FAILURE);
 	}
   Sort *sort = (Sort *)malloc(sizeof(Sort));
   if (sort == NULL){
-    fprintf(stderr, "sort_create: unable to allocate the memory");
+    fprintf(stderr, "sort_create: unable to allocate the memory\n");
     exit(EXIT_FAILURE);
   }
   sort->array = (void **)malloc(INITIAL_CAPACITY_QS * sizeof(void *));
   if (sort->array == NULL){
-    fprintf(stderr, "sort_create: unable to allocate the memory for the internal array");
+    fprintf(stderr, "sort_create: unable to allocate the memory for the internal array\n");
     exit(EXIT_FAILURE);
   }
   sort->size = 0;
@@ -36,7 +36,7 @@ Sort *sort_create(int (*qs_precedes)(void *, void *)){
  */
 unsigned long sort_size(Sort *sort){	
   if (sort == NULL){
-    fprintf(stderr, "sort_size: sort parameter cannot be NULL");
+    fprintf(stderr, "sort_size: sort parameter cannot be NULL\n");
     exit(EXIT_FAILURE);
   }
   return sort->size;
@@ -73,11 +73,11 @@ void sort_add(Sort *sort, void *element){
  */
 void *sort_get(Sort *sort, unsigned long i){	
   if (sort == NULL){
-    fprintf(stderr, "sort_get: unable to allocate the memory");
+    fprintf(stderr, "sort_get: unable to allocate the memory\n");
     exit(EXIT_FAILURE);
   }
   if (i >= sort->size){
-    fprintf(stderr, "sort_get: index %lu out of bounds", i);
+    fprintf(stderr, "sort_get: index %lu out of bounds\n", i);
     exit(EXIT_FAILURE);
 	}
   return sort->array[i];
@@ -88,7 +88,7 @@ void *sort_get(Sort *sort, unsigned long i){
  */
 void *sort_free_memory(Sort *sort){	
   if (sort == NULL){
-    fprintf(stderr, "sort_free_memory: unable to allocate the memory");
+    fprintf(stderr, "sort_free_memory: unable to allocate the memory\n");
     exit(EXIT_FAILURE);
   }
   free(sort->array);
