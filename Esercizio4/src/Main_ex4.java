@@ -1,51 +1,151 @@
 package src;
+
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.Scanner;
+import java.util.Set;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Queue;
 
-
-public class Main_ex4 {
+public class Main_ex4 implements Comparator<Float> {
   public static void main(String[] args) throws Exception {
-    ArrayList<Dist> record = new ArrayList<Dist>();
-    load_file(args[0], record);
-    Graph<Dist, Integer> graph = new Graph<Dist, Integer>(true);
-    for(int i = 0; i<record.size(); i++){
-      Dist tmp = record.get(i);
-      graph.addNode(tmp); 
+    Graph<String, Double> graph = new Graph<String, Double>(false);
+    load_file(args[0], graph);
+
+    Graph<String, Double> shortestPath = dijkstra(graph, "torino");
+
+    ArrayList<String> path = bfs(shortestPath, "torino", "catania");
+    System.out.println("path = size " + path.size());
+    System.out.print(path);
+    System.out.println();
+    int dist = 0;
+    String tmp = path.get(0);
+    for (int i = 1; i < path.size(); i++) {
+      dist += shortestPath.getLabel(tmp, path.get(i));
+      tmp = path.get(i);
     }
-    graph.add_edge(record.get(1), record.get(2), 3);
-    graph.add_edge(record.get(1), record.get(5), 5);
-    System.out.println("nodes num = " + graph.get_nodes_num());
-    System.out.println("edges num = " + graph.get_edges_num());
-    System.out.println("contains edge = " + graph.contains_edge(record.get(1), record.get(2)));
-    System.out.println("contains node = " + graph.contains_node(record.get(1)));
-    // graph.remove_node(record.get(1));
-    System.out.println("nodes num = " + graph.get_nodes_num());
-    System.out.println("edges num = " + graph.get_edges_num());
-    System.out.println("contains node = " + graph.contains_node(record.get(1)));
-    System.out.println("contains edge = " + graph.contains_edge(record.get(1), record.get(2)));
+    System.out.println("distanza torino - catania = " + (float) dist / 1000 + " km");
   }
 
-  public static void load_file(String file_name, ArrayList<Dist> record){
-    
-    try{
-      File file = new File(file_name);
-      Scanner scanner = new Scanner(file);
-      while(scanner.hasNextLine()){
-        String tmp = scanner.nextLine();
-        String[] split = tmp.split(",");
-        String part1 = split[0]; 
-        String part2 = split[1]; 
-        float part3 = Float.parseFloat(split[2]);
-        record.add(new Dist(part1, part2, part3));
-      }
-      scanner.close();    
-    }catch(FileNotFoundException e){
+  public static void load_file(String file_name, Graph<String, Double> graph) throws Exception {
+    File file;
+    Scanner scanner = null;
+    try {
+      file = new File(file_name);
+      scanner = new Scanner(file);
+    } catch (FileNotFoundException e) {
       System.out.println("load_file: error detected.");
-      e.printStackTrace();
     }
+
+    while (scanner.hasNextLine()) {
+      String tmp = scanner.nextLine();
+      String[] split = tmp.split(",");
+      String city1 = split[0];
+      String city2 = split[1];
+      Double dist = Double.parseDouble(split[2]);
+      if (!graph.containsNode(city1))
+        graph.addNode(city1);
+      if (!graph.containsNode(city2))
+        graph.addNode(city2);
+      if (!graph.containsEdge(city1, city2))
+        graph.addEdge(city1, city2, dist);
     }
+    scanner.close();
+  }
+
+  public static Graph<String, Double> dijkstra(Graph<String, Double> graph, String sourceCity) throws Exception {
+
+    Graph<String, Double> shortestPath = new Graph<String, Double>(true);
+
+    Heap<WeightedNode<String, Double>> priorityQueue = new Heap<>(
+        Comparator.comparing((WeightedNode<String, Double> n) -> n.getWeight())); 
+
+    HashMap<String, Double> distance = new HashMap<>();
+    HashMap<String, String> previous = new HashMap<>();
+    HashMap<String, WeightedNode<String, Double>> weightedNodeMap = new HashMap<>();
+    ArrayList<String> nodesList = graph.getNodes();
+
+    for (int i = 0; i < nodesList.size(); i++) {
+      WeightedNode<String, Double> tmp = new WeightedNode<String, Double>(nodesList.get(i),
+          Double.POSITIVE_INFINITY);
+      priorityQueue.heapInsert(tmp);
+      distance.put(nodesList.get(i), Double.POSITIVE_INFINITY);
+      weightedNodeMap.put(tmp.getNode(), tmp);
+      previous.put(nodesList.get(i), null);
+    }
+    priorityQueue.decreaseElement(weightedNodeMap.get(sourceCity), new WeightedNode<String, Double>(sourceCity, 0.0));
+
+    while (priorityQueue.getSize() != 0) {
+      WeightedNode<String, Double> u = priorityQueue.extractMin();
+      weightedNodeMap.remove(u.getNode());
+
+      shortestPath.addNode(u.getNode());
+      String uName = u.getNode();
+      if (graph.containsEdge(previous.get(uName), uName))
+        shortestPath.addEdge(previous.get(uName), uName, graph.getLabel(previous.get(uName), uName));
+
+      ArrayList<String> adjList = graph.getAdjNodes(uName);
+
+      for (int i = 0; i < adjList.size(); i++) {
+        String vAdj = adjList.get(i);
+        Double newDistance = u.getWeight() + graph.getLabel(u.getNode(), vAdj);
+
+        if (distance.get(vAdj) > newDistance && weightedNodeMap.containsKey(vAdj)) {
+          distance.replace(vAdj, newDistance);
+          previous.replace(vAdj, u.getNode());
+          priorityQueue.decreaseElement(weightedNodeMap.get(vAdj),
+              new WeightedNode<String, Double>(vAdj, newDistance));
+        }
+      }
+    }
+    return shortestPath;
+  }
+
+  @Override
+  public int compare(Float weight1, Float weight2) {
+    if (weight1 < weight2)
+      return -1;
+    return 0;
+  }
+
+  public static ArrayList<String> bfs(Graph<String, Double> graph, String source, String destination) throws Exception {
+    Queue<String> queue = new LinkedList<>();
+    Set<String> visited = new HashSet<>();
+    HashMap<String, String> previous = new HashMap<>();
+
+    queue.add(source);
+    visited.add(source);
+    previous.put(source, null);
+
+    while (!queue.isEmpty()) {
+      String node = queue.poll();
+      if (node.equals(destination)) {
+        break;
+      }
+      ArrayList<String> adjList = graph.getAdjNodes(node);
+      for (int i = 0; i < adjList.size(); i++) {
+        String nodeTmp = adjList.get(i);
+        if (!visited.contains(nodeTmp)) {
+          queue.add(nodeTmp);
+          visited.add(nodeTmp);
+          previous.put(nodeTmp, node);
+        }
+      }
+    }
+
+    ArrayList<String> path = new ArrayList<>();
+    String node = destination;
+
+    while (previous.get(node) != null) {
+      path.add(0, node);
+      node = previous.get(node);
+    }
+
+    path.add(0, node);
+    return path;
+  }
 }
-  
