@@ -15,7 +15,7 @@ default: classes
 classes: $(CLASSES:.java=.class)
 
 run: 
-	cd $(CLASSDIR)/ && java src.Main_ex3
+	cd $(CLASSDIR)/ && java src.MainEx3
 
 clean:
 	rm -r -f $(CLASSDIR)/* 

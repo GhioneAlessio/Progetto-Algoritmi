@@ -79,7 +79,6 @@ class Heap<T> {
   }
 
   public T extractMin() {
-
     T min = this.getElem(0);
     this.mapOfIndex.remove(this.getElem(0));
     this.mapOfIndex.replace(this.getElem(this.getSize() - 1), 0);
@@ -111,7 +110,6 @@ class Heap<T> {
   private T getElem(int i) throws NullPointerException {
     if (i < 0 || i > this.getSize() - 1)
       throw new NullPointerException("Heap getElem: Index ouf of bound");
-   
     return this.heap.get(i);
   }
 

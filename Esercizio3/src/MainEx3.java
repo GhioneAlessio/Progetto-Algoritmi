@@ -9,13 +9,11 @@ public class MainEx3 {
     heap.heapInsert(5);
     heap.heapInsert(4);
     heap.heapInsert(7);
-
     for(int i = 0; i < heap.getSize(); i++){
       System.out.print(heap.getElem(i) + " ");
     }
     System.out.println("min elem = " + heap.getMinElement());
     heap.extractMin();
-
     for(int i = 0; i < heap.getSize(); i++){
       System.out.print(heap.getElem(i) + " ");
     }
