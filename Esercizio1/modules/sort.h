@@ -5,9 +5,9 @@
 #define EQUAL_TO 0
 #define GREATER_THAN -1
 
-typedef struct S_Sort Sort;
+typedef struct _Sort Sort;
 
-struct S_Sort{
+struct _Sort{
   void** array; 
   unsigned long array_capacity;
   unsigned long size;
@@ -42,9 +42,16 @@ void* sort_get(Sort *, unsigned long);
 /*
  * sort_free_memory(): frees memory after checking whether the structure is NULL or not.
  */
-void* sort_free_memory(Sort *);
+void* sort_free_memory(Sort *, void(*free_elem) (void*));
 
 /**********QUICKSORT**********/
+/*
+ * quick_sort: Check base condition, if parametres are correct 
+ * partition is called and the result is stored. 
+ * Then quick_sort is called on the subarrays.  
+*/
+void quick_sort(Sort *sort, int left, int right);
+
 /* 
  * Partition using Hoare's Partitioning scheme 
  * This procedure uses two indices set at the beginning and at the end of the array.
@@ -53,31 +60,22 @@ void* sort_free_memory(Sort *);
  */
 int partition(Sort *sort, int array_start, int array_end);
 
-/*
- * quick_sort: Check base condition, if parametres are correct 
- * partition is called and the result is stored. 
- * Then quick_sort is called on the subarrays.  
-*/
-void quick_sort(Sort *sort, int array_start, int array_end);
-
 /**********BINARY INSERTION SORT**********/
-/*   
- * binary_search: mid is mapped to the least integer greater than or 
- * equal to x, by the ceiling function. 
- * If item is in mid position, mid + 1 is returned,  else if item is
- * greater it sets low to mid + 1, then returns it.
- * It is returned the index where insertion_sort() will insert the 
- * element to order the data.  
- */
-int binary_search(Sort *sort, void* target, int left, int right);
-
 /*  
  * insertion_sort: selected (item at i index) stores the element to be inserted. 
  * It then finds the location where selected should be inseretd by
  * calling binary_search(), then moves all elements after location to create space. 
  */
 void insertion_sort (Sort *sort, int length);
+/*   
+ * binary_search: mid is set to *parte intera inferiore*. 
+ * If item is in mid position, mid + 1 is returned,  else if item is
+ * greater it sets low to mid + 1, then returns it.
+ * It is returned the index where insertion_sort() will insert the element to order the data.  
+ */
+int binary_search(Sort *sort, void* target, int left, int right);
 
+  
 /*
  * swap(): swaps two elements. Needed by the quick_sort algorithm.
  */

@@ -62,9 +62,9 @@ void setUp(void){
 }
 
 void tearDown(void){
-  sort_free_memory(sort_int);
-  sort_free_memory(sort_float);
-  sort_free_memory(sort_char);
+  sort_free_memory(sort_int, NULL);
+  sort_free_memory(sort_float, NULL);
+  sort_free_memory(sort_char, NULL);
 }
 
 static void test_sort_size_zero_el(void){
@@ -82,7 +82,7 @@ static void test_sort_size_one_float_el(void){
 }
 
 static void test_sort_size_one_char_el(void){
-  sort_add(sort_char, &c1);
+  sort_add(sort_char, c1);
   TEST_ASSERT_EQUAL_INT(1, sort_size(sort_char));
 }
 
@@ -103,8 +103,8 @@ static void test_sort_add_get_one_float_el(void){
 }
 
 static void test_sort_add_get_one_char_el(void){
-  sort_add(sort_char, &c1);
-  TEST_ASSERT_EQUAL_PTR(&c1,sort_get(sort_char,0));
+  sort_add(sort_char, c1);
+  TEST_ASSERT_EQUAL_PTR(c1,sort_get(sort_char,0));
 }
 
 static void test_sort_quicksort_three_int_el(void){
@@ -118,6 +118,7 @@ static void test_sort_quicksort_three_int_el(void){
     sort_actual[i]=(int*)sort_get(sort_int, i);
   }
   TEST_ASSERT_EQUAL_PTR_ARRAY(sort_expected,sort_actual,3);
+  free(sort_actual);
 }
 
 static void test_sort_insertionsort_three_int_el(void){
@@ -131,6 +132,7 @@ static void test_sort_insertionsort_three_int_el(void){
     sort_actual[i]=(int*)sort_get(sort_int, i);
   }
   TEST_ASSERT_EQUAL_PTR_ARRAY(sort_expected,sort_actual,3);
+  free(sort_actual);
 }
 
 static void test_sort_quicksort_three_float_el(void){
@@ -144,6 +146,7 @@ static void test_sort_quicksort_three_float_el(void){
     sort_actual[i]=(float*)sort_get(sort_float, i);
   }
   TEST_ASSERT_EQUAL_PTR_ARRAY(sort_expected,sort_actual,3);
+  free(sort_actual);
 }
 
 static void test_sort_insertionsort_three_float_el(void){
@@ -157,32 +160,35 @@ static void test_sort_insertionsort_three_float_el(void){
     sort_actual[i]=(float*)sort_get(sort_float, i);
   }
   TEST_ASSERT_EQUAL_PTR_ARRAY(sort_expected,sort_actual,3);
+  free(sort_actual);
 }
 
 static void test_sort_quicksort_three_char_el(void){
-  char** sort_expected[] = {&c1,&c2,&c3};
-  sort_add(sort_char, &c3);
-  sort_add(sort_char, &c1);
-  sort_add(sort_char, &c2);
+  char* sort_expected[] = {c1,c2,c3};
+  sort_add(sort_char, c3);
+  sort_add(sort_char, c1);
+  sort_add(sort_char, c2);
   quick_sort(sort_char, 0, sort_size(sort_char)-1);
   char** sort_actual = malloc(3*sizeof(char*));
   for(unsigned long i=0;i<3;i++){
     sort_actual[i]=(char*)sort_get(sort_char, i);
   }
   TEST_ASSERT_EQUAL_PTR_ARRAY(sort_expected,sort_actual,3);
+  free(sort_actual);
 }
 
 static void test_sort_insertionsort_three_char_el(void){
-  char** sort_expected[] = {&c1,&c2,&c3};
-  sort_add(sort_char, &c3);
-  sort_add(sort_char, &c1);
-  sort_add(sort_char, &c2);
+  char* sort_expected[] = {c1,c2,c3};
+  sort_add(sort_char, c3);
+  sort_add(sort_char, c1);
+  sort_add(sort_char, c2);
   insertion_sort(sort_char, sort_size(sort_char)-1);
   char** sort_actual = malloc(3*sizeof(char*));
   for(unsigned long i=0;i<3;i++){
     sort_actual[i]=(char*)sort_get(sort_char, i);
   }
   TEST_ASSERT_EQUAL_PTR_ARRAY(sort_expected,sort_actual,3);
+  free(sort_actual);
 }
 
 int main(void){

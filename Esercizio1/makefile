@@ -5,11 +5,14 @@ SRCDIR = ./src
 MODDIR = ./modules
 BUILDDIR = ./build
 BINDIR = ./bin
+dir_guard = @mkdir -p $(BINDIR) $(BUILDDIR)
 #---
 OBJS := sort.o
 OBJS_TEST := unity.o
 
+
 %.o : $(MODDIR)/%.c
+	$(dir_guard)
 	$(CC) $(CFLAGS) -c $< -o $(BUILDDIR)/$@
 	
 $(BINDIR)/main: $(OBJS)
@@ -25,6 +28,12 @@ run:
 
 test: $(BINDIR)/main $(BINDIR)/sort_tests
 	cd bin/ && ./sort_tests && cd ..
+
+val: 
+	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --log-file=valgrind.log bin/main records.csv out.dump quicksort 3 
+
+val_test: 
+	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --log-file=valgrind.log bin/sort_tests
 
 clean: 
 	rm -f $(BUILDDIR)/* $(BINDIR)/*

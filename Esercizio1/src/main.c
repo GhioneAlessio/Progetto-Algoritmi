@@ -110,15 +110,11 @@ static int precedes_record_field3(void* p1,void* p2){
     return -1;
 }
 
-
-static  void free_array(Sort* array) {
-  unsigned long  size =  sort_size(array);
-  for(unsigned long i = 0; i < size; i++){
-    struct Record *array_element = (struct Record *)sort_get(array, i);
-    free(array_element->field1);
-    free(array_element);
-  }
-  sort_free_memory(array);
+static  void free_elem(void *record) {
+    struct Record *elem = (struct Record *)record;
+    
+    free(elem->field1);
+    free(elem);
 }
 
 static  void print_array(Sort* array, char * output_file){
@@ -129,6 +125,7 @@ static  void print_array(Sort* array, char * output_file){
     array_element = (struct Record *)sort_get(array, i);
     fprintf(fp, "%d,%s,%d,%f\n", array_element->id, array_element->field1, array_element->field2, array_element->field3); 
   }
+  fclose(fp);
 }
 
 /*
@@ -142,7 +139,7 @@ static void load_array(const char* file_name, Sort* array){
   printf("\nLoading data from file...\n");
   fp = fopen(file_name,"r");
   if(fp == NULL){
-    fprintf(stderr,"main: unable to open the file\n");
+    fprintf(stderr,"main: unable to open the file");
     exit(EXIT_FAILURE);
   }
    
@@ -152,7 +149,8 @@ static void load_array(const char* file_name, Sort* array){
       fprintf(stderr,"main: unable to allocate memory for the read line");
       exit(EXIT_FAILURE);
     }   
-    strcpy(read_line_p, buffer);   
+    
+    strcpy(read_line_p,buffer);   
     char *id_in_read_line_p = strtok(read_line_p,",");
     char *field1_in_read_line_p = strtok(NULL,",");
     char *field2_in_read_line_p = strtok(NULL,",");  
@@ -184,21 +182,20 @@ static void load_array(const char* file_name, Sort* array){
 
 
 /*
- * Aux function used by the main to sort the records 
- * as indicated by the user in the makefile.
+ * Aux functions used by the main to sort the records as indicated by the user in the make file.
  */
 static  void aux_function(const char* file_name, int (*compare)(void*, void*), int flag, char * output_file) {
   Sort* array = sort_create(compare);
   load_array(file_name, array);
   clock_t time = clock();
   if(flag == 0){
-    srand(time);
-	quick_sort(array, 0, sort_size(array)-1); 
+	  quick_sort(array, 0, sort_size(array)-1); 
   } else
 	insertion_sort(array, sort_size(array)-1);
   printf("It took %f seconds to order the array\n", ((float)(clock() - time)/CLOCKS_PER_SEC));
+  printf("\nThe array has been ordered, now it's being saved in the file %s\n", output_file);
   print_array(array, output_file);
-  free_array(array);
+  sort_free_memory(array, free_elem);
 } 
 
 /*
@@ -209,7 +206,7 @@ static  void aux_function(const char* file_name, int (*compare)(void*, void*), i
  * (4) a number from 0 to 3 to denote the field to order.
  */
 int main(int argc, char const *argv[]) {
-  int algorithm;
+  int flag;
   if(argc < 4) {
     printf("Too few arguments\n");  
     exit(EXIT_FAILURE);
@@ -218,26 +215,26 @@ int main(int argc, char const *argv[]) {
   char *output_file = (char *) argv[2];
   if(strcmp(argv[3], "quicksort") == 0){
 	printf("ORDERING WITH QUICKSORT ON FIELD %d\n", atoi(argv[4]));
-	algorithm = 0;
+	flag = 0;
   } else if (strcmp(argv[3], "binaryInsertionSort") == 0){
 	printf("ORDERING WITH BINARY INSERTION SORT ON FIELD %d\n", atoi(argv[4]));
-	algorithm = 1;
+	flag = 1;
   } else {
     printf("Not an algorithm\n");
 	exit(EXIT_FAILURE);
   }
   switch(atoi(argv[4])){
 	case 0:
-	  aux_function(input_file, precedes_record_id, algorithm, output_file);
+	  aux_function(input_file, precedes_record_id, flag, output_file);
 	  break;
 	case 1:
-	  aux_function(input_file, precedes_record_field1, algorithm, output_file);   
+	  aux_function(input_file, precedes_record_field1, flag, output_file);   
 	  break;
 	case 2:
-	  aux_function(input_file, precedes_record_field2, algorithm, output_file);   
+	  aux_function(input_file, precedes_record_field2, flag, output_file);   
 	  break;
 	case 3:
-	  aux_function(input_file, precedes_record_field3, algorithm, output_file);  
+	  aux_function(input_file, precedes_record_field3, flag, output_file);  
 	  break;
     default:
 	  printf("Not a field\n");
