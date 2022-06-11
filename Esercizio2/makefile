@@ -5,11 +5,13 @@ SRCDIR = ./src
 MODDIR = ./modules
 BUILDDIR = ./build
 BINDIR = ./bin
+dir_guard = @mkdir -p $(BINDIR) $(BUILDDIR)
 #---
 OBJS := skiplist.o
 OBJS_TEST := unity.o
 
-%.o : $(MODDIR)/%.c 
+%.o : $(MODDIR)/%.c
+	$(dir_guard)
 	$(CC) $(CFLAGS) -c $< -o $(BUILDDIR)/$@
 
 $(BINDIR)/main_ex2: $(OBJS)
@@ -29,3 +31,6 @@ clean:
 
 val: 
 	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --log-file=valgrind.log bin/main_ex2 dictionary.txt correctme.txt
+
+val_test: 
+	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --log-file=valgrind.log bin/skiplist_tests
