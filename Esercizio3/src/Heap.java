@@ -22,20 +22,20 @@ class Heap<T> {
 
     int ind = mapOfIndex.get(elem);
 
-    if (2 * ind < this.getSize())
-      return this.heap.get(2 * ind);
+    if ((2 * ind) + 1< this.getSize())
+      return this.heap.get((2 * ind) + 1);
     else
       return this.heap.get(ind);
   }
 
-  public T rigthElem(T elem) throws IllegalArgumentException {
+  public T rightElem(T elem) throws IllegalArgumentException {
     if (!mapOfIndex.containsKey(elem))
       throw new IllegalArgumentException("Heap rightElem: element not found");
 
     int ind = mapOfIndex.get(elem);
 
-    if ((2 * ind) + 1 < this.getSize())
-      return this.heap.get((2 * ind) + 1);
+    if ((2 * ind) + 2 < this.getSize())
+      return this.heap.get((2 * ind) + 2);
     else
       return this.heap.get(ind);
   }
@@ -44,7 +44,7 @@ class Heap<T> {
     if (!mapOfIndex.containsKey(elem))
       throw new IllegalArgumentException("Heap parentElem: element not found");
 
-    int parentInd = this.mapOfIndex.get(elem) / 2;
+    int parentInd = (this.mapOfIndex.get(elem) - 1) / 2;
     return this.heap.get(parentInd);
   }
 
@@ -54,8 +54,8 @@ class Heap<T> {
     this.mapOfIndex.put(x, p);
     T elem = this.heap.get(p);
     while (p > 0 && (this.compare).compare(elem, parentElem(heap.get(p))) < 0) {
-      swap(p, p / 2);
-      p = p / 2;
+      swap(p, (p - 1)/ 2);
+      p = ((p -1)/ 2);
       elem = this.heap.get(p);
     }
     return 0;
@@ -94,7 +94,7 @@ class Heap<T> {
     int m;
     T elem = this.getElem(index);
     T leftElem = leftElem(elem);
-    T rightElem = rigthElem(elem);
+    T rightElem = rightElem(elem);
     if ((this.compare).compare(elem, leftElem) < 0 && (this.compare).compare(elem, rightElem) < 0) {
       m = index;
     } else if ((this.compare).compare(leftElem, elem) < 0 && (this.compare).compare(leftElem, rightElem) < 0)
@@ -110,6 +110,7 @@ class Heap<T> {
   private T getElem(int i) throws NullPointerException {
     if (i < 0 || i > this.getSize() - 1)
       throw new NullPointerException("Heap getElem: Index ouf of bound");
+   
     return this.heap.get(i);
   }
 
