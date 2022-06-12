@@ -12,7 +12,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Queue;
 
-public class Main_ex4 implements Comparator<Float> {
+public class MainEx4 implements Comparator<Float> {
   public static void main(String[] args) throws Exception {
     Graph<String, Double> graph = new Graph<String, Double>(false);
     load_file(args[0], graph);

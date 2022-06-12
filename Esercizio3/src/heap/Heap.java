@@ -16,6 +16,10 @@ class Heap<T> {
     this.mapOfIndex = new HashMap<T, Integer>();
   }
 
+  /*
+   * Returns the left child of elem if it exists, elem otherwise, by getting elem's index,
+   * then calculatig the child's index and (if it's not out of bounds) returning the child. 
+   */
   public T leftElem(T elem) throws IllegalArgumentException {
     if (!mapOfIndex.containsKey(elem))
       throw new IllegalArgumentException("Heap leftElem: element not found");
@@ -28,6 +32,10 @@ class Heap<T> {
       return this.heap.get(ind);
   }
 
+  /*
+   * Returns the right child of elem if it exists, elem otherwise, by getting elem's index,
+   * then calculatig the child's index and (if it's not out of bounds) returning the child. 
+   */
   public T rightElem(T elem) throws IllegalArgumentException {
     if (!mapOfIndex.containsKey(elem))
       throw new IllegalArgumentException("Heap rightElem: element not found");
@@ -40,6 +48,10 @@ class Heap<T> {
       return this.heap.get(ind);
   }
 
+  /*
+   * Returns elem's parent, by getting elem's index, then calculatig the parent's index 
+   * and returning it. 
+   */
   public T parentElem(T elem) throws IllegalArgumentException {
     if (!mapOfIndex.containsKey(elem))
       throw new IllegalArgumentException("Heap parentElem: element not found");
@@ -48,6 +60,10 @@ class Heap<T> {
     return this.heap.get(parentInd);
   }
 
+  /*
+   * It inserts x into the heap. It does so by inserting it into the last position
+   * then swapping it into its correct position.
+   */
   public int heapInsert(T x) {
     this.heap.add(x);
     int p = this.heap.size() - 1;
@@ -61,6 +77,9 @@ class Heap<T> {
     return 0;
   }
 
+  /*
+   * Swaps two elements in the heap and updates their indexes.
+   */
   private void swap(int a, int b) {
     T tmp1 = this.heap.get(a);
     T tmp2 = this.heap.get(b);
@@ -74,10 +93,18 @@ class Heap<T> {
     return this.heap.size();
   }
 
+  /*
+  * It returns the element in the root position, as it is a MinHeap
+  */
   public T getMinElement() {
     return this.heap.get(0);
   }
 
+  /*
+  * It extracts the root by replacing it with the last element,
+  * Size and the indexes are updated.
+  * Then heapify is called on the (new) root to restore the order.
+  */
   public T extractMin() {
     T min = this.getElem(0);
     this.mapOfIndex.remove(this.getElem(0));
@@ -88,6 +115,9 @@ class Heap<T> {
     return min;
   }
 
+  /*
+  * Heapify restores the order into the heap by comparing and swapping the elements.
+  */
   private void heapify(int index) {
     if (this.getSize() == 0)
       return;
@@ -107,6 +137,9 @@ class Heap<T> {
     }
   }
 
+  /*
+  * Returns the element at i index 
+  */
   private T getElem(int i) throws NullPointerException {
     if (i < 0 || i > this.getSize() - 1)
       throw new NullPointerException("Heap getElem: Index ouf of bound");
