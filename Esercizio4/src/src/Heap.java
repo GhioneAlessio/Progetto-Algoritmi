@@ -26,7 +26,6 @@ class Heap<T> {
       return this.heap.get((2 * ind) + 1);
     else
       return this.heap.get(ind);
-      
   }
 
   public T rightElem(T elem) throws IllegalArgumentException {
@@ -80,7 +79,6 @@ class Heap<T> {
   }
 
   public T extractMin() {
-
     T min = this.getElem(0);
     this.mapOfIndex.remove(this.getElem(0));
     this.mapOfIndex.replace(this.getElem(this.getSize() - 1), 0);
@@ -127,8 +125,8 @@ class Heap<T> {
     T elem = this.heap.get(ind);
 
     while (ind > 0 && (this.compare).compare(elem, parentElem(this.heap.get(ind))) < 0) {
-      swap(ind, ind / 2);
-      ind = ind / 2;
+      swap(ind, (ind -1)/ 2);
+      ind = (ind -1)/ 2;
       elem = this.heap.get(ind);
     }
   }

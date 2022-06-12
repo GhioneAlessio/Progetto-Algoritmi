@@ -125,8 +125,8 @@ class Heap<T> {
     T elem = this.heap.get(ind);
 
     while (ind > 0 && (this.compare).compare(elem, parentElem(this.heap.get(ind))) < 0) {
-      swap(ind, ind / 2);
-      ind = ind / 2;
+      swap(ind, (ind -1)/ 2);
+      ind = (ind -1)/ 2;
       elem = this.heap.get(ind);
     }
   }
