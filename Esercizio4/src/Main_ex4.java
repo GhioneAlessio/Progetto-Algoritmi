@@ -1,4 +1,5 @@
-package src;
+import graph.*;
+import heap.Heap;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -28,7 +29,7 @@ public class Main_ex4 implements Comparator<Float> {
       dist += shortestPath.getLabel(tmp, path.get(i));
       tmp = path.get(i);
     }
-    System.out.println("distanza torino - catania = " + (float) dist / 1000 + " km");
+    System.out.println("distanza torino - catania = " + (double) dist / 1000 + " km");   
   }
 
   public static void load_file(String file_name, Graph<String, Double> graph) throws Exception {
@@ -64,29 +65,24 @@ public class Main_ex4 implements Comparator<Float> {
     Heap<WeightedNode<String, Double>> priorityQueue = new Heap<>(
         Comparator.comparing((WeightedNode<String, Double> n) -> n.getWeight())); 
 
-    HashMap<String, Double> distance = new HashMap<>();
-    HashMap<String, String> previous = new HashMap<>();
     HashMap<String, WeightedNode<String, Double>> weightedNodeMap = new HashMap<>();
     ArrayList<String> nodesList = graph.getNodes();
 
     for (int i = 0; i < nodesList.size(); i++) {
       WeightedNode<String, Double> tmp = new WeightedNode<String, Double>(nodesList.get(i),
-          Double.POSITIVE_INFINITY);
+          Double.POSITIVE_INFINITY, "");
       priorityQueue.heapInsert(tmp);
-      distance.put(nodesList.get(i), Double.POSITIVE_INFINITY);
       weightedNodeMap.put(tmp.getNode(), tmp);
-      previous.put(nodesList.get(i), null);
     }
-    priorityQueue.decreaseElement(weightedNodeMap.get(sourceCity), new WeightedNode<String, Double>(sourceCity, 0.0));
+    priorityQueue.decreaseElement(weightedNodeMap.get(sourceCity), new WeightedNode<String, Double>(sourceCity, 0.0, null));
 
     while (priorityQueue.getSize() != 0) {
       WeightedNode<String, Double> u = priorityQueue.extractMin();
-      weightedNodeMap.remove(u.getNode());
-
+      
       shortestPath.addNode(u.getNode());
       String uName = u.getNode();
-      if (graph.containsEdge(previous.get(uName), uName))
-        shortestPath.addEdge(previous.get(uName), uName, graph.getLabel(previous.get(uName), uName));
+      if (graph.containsEdge(weightedNodeMap.get(uName).getPrevious(), uName))
+        shortestPath.addEdge(weightedNodeMap.get(uName).getPrevious(), uName, graph.getLabel(weightedNodeMap.get(uName).getPrevious(), uName));
 
       ArrayList<String> adjList = graph.getAdjNodes(uName);
 
@@ -94,13 +90,14 @@ public class Main_ex4 implements Comparator<Float> {
         String vAdj = adjList.get(i);
         Double newDistance = u.getWeight() + graph.getLabel(u.getNode(), vAdj);
 
-        if (distance.get(vAdj) > newDistance && weightedNodeMap.containsKey(vAdj)) {
-          distance.replace(vAdj, newDistance);
-          previous.replace(vAdj, u.getNode());
+        if (weightedNodeMap.containsKey(vAdj) && weightedNodeMap.get(vAdj).getWeight() > newDistance  ) {
+          weightedNodeMap.get(vAdj).setWeight(newDistance);
+          weightedNodeMap.get(vAdj).setPrevious(u.getNode());
           priorityQueue.decreaseElement(weightedNodeMap.get(vAdj),
-              new WeightedNode<String, Double>(vAdj, newDistance));
+          new WeightedNode<String, Double>(vAdj, newDistance, u.getNode()));
         }
       }
+      weightedNodeMap.remove(u.getNode());
     }
     return shortestPath;
   }
