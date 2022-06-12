@@ -1,0 +1,64 @@
+<project name="Heap" basedir="." default="all">
+    <target name="init">
+        <property name="project.name" value="${ant.project.name}" />
+        <property location="classes" name="classes.dir" />
+        <property location="build" name="build.dir" />
+        <property location="src" name="src.dir" />
+        <property location="dist" name="dist.dir" />
+        <property location="../JUnit/junit-4.12.jar" name="junit" />
+        <property location="../JUnit/hamcrest-core-1.3.jar" name="hamcrest-core" />
+    </target>
+
+    <target depends="init" name="clean">
+        <delete dir="${build.dir}"/>
+        <delete dir="${classes.dir}"/>
+    </target>
+
+    <target depends="init" name="compile">
+        <mkdir dir="${classes.dir}" />
+        <javac destdir="${classes.dir}" srcdir="${src.dir}" includeantruntime="false" encoding="iso-8859-1">
+            <classpath>
+                  <pathelement location="${junit}" />
+                  <pathelement location="${hamcrest-core}" />
+            </classpath>
+        </javac>
+    </target>
+
+    <target depends="compile" name="jar">
+        <mkdir dir="${build.dir}"/>
+
+        <jar destfile="build/Heap.jar" basedir="${classes.dir}">
+          <manifest>
+            <attribute name="Main-Class" value="orderedarrayusagejava/OrderedArrayUsageJava"/>
+          </manifest>
+        </jar>
+    </target>
+
+    <target depends="compile" name="junit">
+        <mkdir dir="build"/>
+        <jar destfile="build/HeapJavaTestsRunner.jar" basedir="${classes.dir}">
+          <zipgroupfileset dir="../JUnit" includes="*.jar" excludes=""/>
+          <manifest>
+            <attribute name="Main-Class" value="src/HeapJavaTestsRunner"/>
+            <attribute name="Class-Path" value="${classpath}"/>
+          </manifest>
+        </jar>
+    </target>
+
+     <target depends="compile" name="run">
+        <java classname="${classes.dir}" >
+            <classpath>
+                  <pathelement location="${junit}" />
+                  <pathelement location="${hamcrest-core}" />
+            </classpath>
+        </java>
+    </target>
+
+    <target depends="compile" name="test">
+        <java jar="${build.dir}/HeapJavaTestsRunner.jar" fork="true"/>
+    </target>
+
+    <target depends="clean,init,compile,jar,junit" name="all" />
+
+</project>
+
