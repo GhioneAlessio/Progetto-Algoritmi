@@ -10,7 +10,7 @@ import java.util.HashMap;
  * @param <T>: type of the minimum heap elements
  */
 
-class Heap<T> {
+public class Heap<T> {
 
   private ArrayList<T> heap = null;
   private Comparator<? super T> compare = null;

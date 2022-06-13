@@ -45,15 +45,6 @@
         </jar>
     </target>
 
-     <target depends="compile" name="run">
-        <java classname="${classes.dir}" >
-            <classpath>
-                  <pathelement location="${junit}" />
-                  <pathelement location="${hamcrest-core}" />
-            </classpath>
-        </java>
-    </target>
-
     <target depends="compile" name="test">
         <java jar="${build.dir}/HeapJavaTestsRunner.jar" fork="true"/>
     </target>
