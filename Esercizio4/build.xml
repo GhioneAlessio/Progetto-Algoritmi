@@ -26,10 +26,10 @@
 
     <target depends="compile" name="jar">
         <mkdir dir="${build.dir}"/>
-        <jar destfile="build/Main_ex4.jar" basedir="${classes.dir}">
+        <jar destfile="build/MainEx4.jar" basedir="${classes.dir}">
             <zipgroupfileset dir="../JUnit" includes="*.jar" excludes=""/>
             <manifest>
-                <attribute name="Main-Class" value="src/Main_ex4"/>
+                <attribute name="Main-Class" value="src/MainEx4"/>
                 <attribute name="Class-Path" value="${classpath}"/>
              </manifest>
         </jar>
@@ -47,7 +47,7 @@
     </target>
 
     <target depends="compile,jar" name="runjar">
-        <java jar="${build.dir}/Main_ex4.jar" fork="false">
+        <java jar="${build.dir}/MainEx4.jar" fork="false">
         </java>
     </target>
 
@@ -56,9 +56,9 @@
     </target>
     
     <target depends="compile" name="run">
-        <java classname="Main_ex4" fork="true">
+        <java classname="MainEx4" fork="true">
             <classpath>
-                <pathelement location="Main_ex4"/>
+                <pathelement location="MainEx4"/>
                 <pathelement path="classes"/>
             </classpath>
             <arg value="${arg1}"/>

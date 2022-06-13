@@ -1,4 +1,5 @@
-package src;
+import graph.*;
+import heap.Heap;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -11,7 +12,12 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Queue;
 
-public class Main_ex4 implements Comparator<Float> {
+public class MainEx4 implements Comparator<Float> {
+  /**
+   * 
+   * @param args : the command line arguments
+   * @throws Exception
+   */
   public static void main(String[] args) throws Exception {
     Graph<String, Double> graph = new Graph<String, Double>(false);
     load_file(args[0], graph);
@@ -28,9 +34,16 @@ public class Main_ex4 implements Comparator<Float> {
       dist += shortestPath.getLabel(tmp, path.get(i));
       tmp = path.get(i);
     }
-    System.out.println("distanza torino - catania = " + (double) dist / 1000 + " km");
+    System.out.println("distanza torino - catania = " + (double) dist / 1000 + " km");   
   }
 
+  /**
+   * It loads the file in the graph.
+   * @param file_name : file that contains the distances in meters between some Italian
+   * localities and a hamlet of the localities closest to them
+   * @param graph : graph to be filled
+   * @throws Exception
+   */
   public static void load_file(String file_name, Graph<String, Double> graph) throws Exception {
     File file;
     Scanner scanner = null;
@@ -57,6 +70,13 @@ public class Main_ex4 implements Comparator<Float> {
     scanner.close();
   }
 
+  /**
+   * 
+   * @param graph : initial graph
+   * @param sourceCity : source whose shortest path graph is desired
+   * @return the shortest path from the source
+   * @throws Exception
+   */
   public static Graph<String, Double> dijkstra(Graph<String, Double> graph, String sourceCity) throws Exception {
 
     Graph<String, Double> shortestPath = new Graph<String, Double>(true);
@@ -108,6 +128,14 @@ public class Main_ex4 implements Comparator<Float> {
     return 0;
   }
 
+  /**
+   * 
+   * @param graph : initial graph
+   * @param source
+   * @param destination
+   * @return the path from source to destination
+   * @throws Exception
+   */
   public static ArrayList<String> bfs(Graph<String, Double> graph, String source, String destination) throws Exception {
     Queue<String> queue = new LinkedList<>();
     Set<String> visited = new HashSet<>();
