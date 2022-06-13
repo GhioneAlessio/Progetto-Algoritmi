@@ -21,7 +21,6 @@ class Heap<T> {
    * @param compare : a comparator implementing the precedence relation among heap elements.
    */
   public Heap(Comparator<? super T> compare) {
-    if (comparator == null) throw new Exception("Heap constructor: compare parameter cannot be null");
     this.heap = new ArrayList<T>();
     this.compare = compare;
     this.mapOfIndex = new HashMap<T, Integer>();
