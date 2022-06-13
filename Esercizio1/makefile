@@ -24,16 +24,16 @@ $(BINDIR)/sort_tests: $(OBJS_TEST)
 all: $(BINDIR)/main $(BINDIR)/sort_tests
 
 run:
-	cd bin/ && ./main ../records.csv out.dump quicksort 1  && cd ..
+	bin/main $(arg1) $(arg2) $(arg3) $(arg4)
 
 test: $(BINDIR)/main $(BINDIR)/sort_tests
-	cd bin/ && ./sort_tests && cd ..
+	bin/sort_tests
 
 val: 
-	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --log-file=valgrind.log bin/main records.csv out.dump quicksort 3 
+	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --log-file=valgrind.log bin/main $(arg1) $(arg2) $(arg3) $(arg4)
 
 val_test: 
 	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --log-file=valgrind.log bin/sort_tests
 
 clean: 
-	rm -f $(BUILDDIR)/* $(BINDIR)/*
+	rm -f $(BUILDDIR)/* $(BINDIR)/* 
