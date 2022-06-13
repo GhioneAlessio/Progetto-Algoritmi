@@ -1,5 +1,12 @@
 import java.util.Objects;
 
+/**
+ * 
+ * It represents an object that contains the node, the sum of the edges' weights
+ * from the source to the node and his previous.
+ * @param <T> : type of the node and his previous 
+ * @param <S> : type of the weight
+ */
 public class WeightedNode<T, S>{
   
   private T node;
@@ -44,7 +51,7 @@ public class WeightedNode<T, S>{
     if (this == obj) {
       return true;
     }
-     @SuppressWarnings({"unchecked"})
+    @SuppressWarnings({"unchecked"})
     WeightedNode<T,S> tmp = (WeightedNode<T,S>)obj;
     if(this.node.equals(tmp.getNode()))
       return true;

@@ -1,5 +1,11 @@
 package graph;
 
+/**
+ * 
+ * It represents the edge between two nodes.
+ * @param <T> : type of the nodes 
+ * @param <S> : type of the edge's weight
+ */
 public class Edge<T, S> {
 
   private T node1;
@@ -39,7 +45,7 @@ public class Edge<T, S> {
     if (this == obj) {
       return true;
     }
-     @SuppressWarnings({"unchecked"})
+    @SuppressWarnings({"unchecked"})
     Edge<T,S> tmp = (Edge<T,S>)obj;
     if(this.node1.equals(tmp.getNode1()) && this.node2.equals(tmp.getNode2()) && this.label.equals(tmp.getLabel()))
       return true;
