@@ -21,16 +21,16 @@ $(BINDIR)/skiplist_tests: $(OBJS_TEST)
 	$(CC) $(CFLAGS)	-o $@ $(SRCDIR)/skiplist_tests.c $(BUILDDIR)/$(OBJS) $(BUILDDIR)/$(OBJS_TEST)
 
 run:
-	cd bin/ && ./main_ex2 ../dictionary.txt ../correctme.txt
+	bin/main_ex2 $(arg1) $(arg2)
 
 test: $(BINDIR)/main_ex2 $(BINDIR)/skiplist_tests
-	cd bin/ && ./skiplist_tests && cd ..
+	bin/skiplist_tests
 
 clean: 
 	rm -f $(BUILDDIR)/* $(BINDIR)/*
 
 val: 
-	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --log-file=valgrind.log bin/main_ex2 dictionary.txt correctme.txt
+	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --log-file=valgrind.log bin/main_ex2 $(arg1) $(arg2)
 
 val_test: 
 	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --log-file=valgrind.log bin/skiplist_tests
