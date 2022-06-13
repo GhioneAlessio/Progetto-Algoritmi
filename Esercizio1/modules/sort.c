@@ -132,7 +132,7 @@ int binary_search(Sort *sort, void *item, int left, int right){
 }
 
 void insertion_sort(Sort *sort, int length){	
-  int i, loc, j, k;
+  int i, loc, j;
   void *selected; 
   for (i = 1; i <= length; i++) {
     j = i - 1;
