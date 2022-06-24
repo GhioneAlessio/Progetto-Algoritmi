@@ -28,9 +28,6 @@
         <mkdir dir="${build.dir}"/>
 
         <jar destfile="build/Heap.jar" basedir="${classes.dir}">
-          <manifest>
-            <attribute name="Main-Class" value="orderedarrayusagejava/OrderedArrayUsageJava"/>
-          </manifest>
         </jar>
     </target>
 
@@ -45,7 +42,7 @@
         </jar>
     </target>
 
-    <target depends="compile" name="test">
+    <target depends="compile, junit" name="test">
         <java jar="${build.dir}/HeapJavaTestsRunner.jar" fork="true"/>
     </target>
 
